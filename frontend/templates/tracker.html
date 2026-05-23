@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AI Job Hunter Pro — Job Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+/* ============================================================
+   RESET + ROOT
+============================================================ */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;
+  --surface:#12121a;
+  --surface2:#1a1a28;
+  --surface3:#22223a;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.13);
+  --violet:#7c6ffa;
+  --violet2:#a78bfa;
+  --violet-glow:rgba(124,111,250,0.18);
+  --green:#22d47b;
+  --green-bg:rgba(34,212,123,0.10);
+  --green-border:rgba(34,212,123,0.28);
+  --amber:#f59e0b;
+  --amber-bg:rgba(245,158,11,0.10);
+  --amber-border:rgba(245,158,11,0.28);
+  --red:#f25252;
+  --red-bg:rgba(242,82,82,0.10);
+  --red-border:rgba(242,82,82,0.28);
+  --blue:#3b82f6;
+  --blue-bg:rgba(59,130,246,0.10);
+  --blue-border:rgba(59,130,246,0.28);
+  --text:#f0f0ff;
+  --text2:#9999bb;
+  --text3:#55557a;
+  --font-head:'Syne',sans-serif;
+  --font-body:'Space Grotesk',sans-serif;
+  --sidebar-w:260px;
+  --sidebar-sm:72px;
+  --topbar-h:64px;
+  --radius:10px;
+  --radius-lg:16px;
+  --radius-xl:22px;
+  --shadow:0 4px 24px rgba(0,0,0,0.4);
+  --shadow-v:0 4px 20px rgba(124,111,250,0.3);
+  --transition:all 0.28s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ============================================================
+   BASE
+============================================================ */
+html,body{
+  height:100%;background:var(--bg);
+  color:var(--text);font-family:var(--font-body);
+  font-size:15px;line-height:1.6;overflow:hidden;
+}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:var(--violet)}
+
+/* ============================================================
+   SHELL
+============================================================ */
+.shell{display:flex;height:100vh;overflow:hidden}
+
+/* ============================================================
+   SIDEBAR
+============================================================ */
+.sidebar{
+  width:var(--sidebar-w);min-width:var(--sidebar-w);
+  height:100vh;background:var(--surface);
+  border-right:1px solid var(--border2);
+  display:flex;flex-direction:column;
+  transition:var(--transition);
+  position:relative;z-index:100;overflow:hidden;
+}
+.sidebar.collapsed{
+  width:var(--sidebar-sm);
+  min-width:var(--sidebar-sm);
+}
+.sidebar-brand{
+  display:flex;align-items:center;gap:11px;
+  padding:0 18px;height:var(--topbar-h);
+  border-bottom:1px solid var(--border);
+  overflow:hidden;flex-shrink:0;
+}
+.brand-icon{
+  width:36px;height:36px;min-width:36px;
+  background:var(--violet-glow);
+  border:1px solid rgba(124,111,250,0.35);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;flex-shrink:0;
+}
+.brand-text{overflow:hidden;white-space:nowrap}
+.brand-title{
+  font-family:var(--font-head);font-size:15px;font-weight:800;
+  background:linear-gradient(135deg,#fff 0%,var(--violet2) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;line-height:1.2;
+}
+.brand-sub{
+  font-size:10px;color:var(--text3);
+  letter-spacing:0.05em;text-transform:uppercase;
+}
+.sidebar-toggle{
+  position:absolute;top:50%;right:-13px;
+  transform:translateY(-50%);
+  width:26px;height:26px;background:var(--surface3);
+  border:1px solid var(--border2);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:11px;color:var(--text2);
+  transition:var(--transition);z-index:10;
+}
+.sidebar-toggle:hover{
+  background:var(--violet);color:#fff;
+  border-color:var(--violet);
+}
+.user-card{
+  display:flex;align-items:center;gap:10px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:10px 12px;
+  overflow:hidden;
+}
+.user-avatar{
+  width:36px;height:36px;min-width:36px;border-radius:50%;
+  background:linear-gradient(135deg,var(--violet),var(--violet2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);font-size:14px;font-weight:700;
+  color:#fff;flex-shrink:0;
+}
+.user-info{overflow:hidden;flex:1}
+.user-name{
+  font-family:var(--font-head);font-size:13px;font-weight:700;
+  color:var(--text);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;
+}
+.user-role{font-size:10.5px;color:var(--text3);white-space:nowrap}
+.sidebar-nav{flex:1;overflow-y:auto;padding:10px}
+.nav-section-label{
+  font-size:10px;font-weight:600;color:var(--text3);
+  text-transform:uppercase;letter-spacing:0.1em;
+  padding:8px 8px 5px;white-space:nowrap;overflow:hidden;
+}
+.sidebar.collapsed .nav-section-label{opacity:0}
+.nav-item{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 12px;border-radius:var(--radius);
+  cursor:pointer;transition:var(--transition);
+  margin-bottom:3px;overflow:hidden;
+  position:relative;white-space:nowrap;color:var(--text2);
+}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{
+  background:var(--violet-glow);color:var(--violet2);
+  border:1px solid rgba(124,111,250,0.18);
+}
+.nav-item.active::before{
+  content:'';position:absolute;left:0;top:20%;bottom:20%;
+  width:3px;border-radius:0 3px 3px 0;background:var(--violet);
+}
+.nav-icon{font-size:16px;min-width:18px;text-align:center;flex-shrink:0}
+.nav-label{font-size:13.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis}
+.sidebar.collapsed .nav-label{display:none}
+.sidebar.collapsed .nav-item{justify-content:center;padding:12px}
+.sidebar-bottom{padding:12px;border-top:1px solid var(--border);flex-shrink:0}
+.btn-logout{
+  width:100%;display:flex;align-items:center;gap:10px;
+  padding:10px 12px;background:transparent;
+  border:1px solid var(--border2);border-radius:var(--radius);
+  color:var(--text2);font-family:var(--font-body);
+  font-size:13px;font-weight:500;cursor:pointer;
+  transition:var(--transition);overflow:hidden;white-space:nowrap;
+}
+.btn-logout:hover{
+  background:var(--red-bg);
+  border-color:rgba(242,82,82,0.3);color:var(--red);
+}
+.sidebar.collapsed .btn-logout{justify-content:center;padding:10px}
+.sidebar.collapsed .btn-logout span{display:none}
+
+/* ============================================================
+   MAIN
+============================================================ */
+.main{
+  flex:1;display:flex;flex-direction:column;
+  overflow:hidden;min-width:0;
+}
+
+/* ============================================================
+   TOPBAR
+============================================================ */
+.topbar{
+  height:var(--topbar-h);min-height:var(--topbar-h);
+  background:var(--surface);border-bottom:1px solid var(--border2);
+  display:flex;align-items:center;
+  padding:0 28px;gap:16px;flex-shrink:0;
+}
+.topbar-left{display:flex;align-items:center;gap:14px;flex:1}
+.topbar-back{
+  display:flex;align-items:center;gap:7px;
+  padding:8px 14px;background:transparent;
+  border:1px solid var(--border2);border-radius:var(--radius);
+  color:var(--text2);font-family:var(--font-body);
+  font-size:13px;font-weight:500;cursor:pointer;
+  transition:var(--transition);
+}
+.topbar-back:hover{background:var(--surface2);color:var(--text)}
+.topbar-title{
+  font-family:var(--font-head);
+  font-size:18px;font-weight:700;color:var(--text);
+}
+.topbar-title span{color:var(--violet2)}
+.topbar-actions{display:flex;align-items:center;gap:10px}
+.topbar-btn{
+  display:flex;align-items:center;gap:7px;
+  padding:8px 16px;background:transparent;
+  border:1px solid var(--border2);border-radius:var(--radius);
+  color:var(--text2);font-family:var(--font-body);
+  font-size:13px;font-weight:500;cursor:pointer;
+  transition:var(--transition);white-space:nowrap;
+}
+.topbar-btn:hover{background:var(--surface2);color:var(--text)}
+.topbar-btn.primary{
+  background:var(--violet);border-color:var(--violet);color:#fff;
+}
+.topbar-btn.primary:hover{
+  background:var(--violet2);
+  box-shadow:var(--shadow-v);transform:translateY(-1px);
+}
+
+/* ============================================================
+   CONTENT
+============================================================ */
+.content{flex:1;overflow-y:auto;padding:28px}
+
+/* ============================================================
+   PAGE HEADER
+============================================================ */
+.page-header{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  margin-bottom:24px;flex-wrap:wrap;gap:14px;
+  animation:fadeUp 0.4s ease forwards;
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.page-title{
+  font-family:var(--font-head);
+  font-size:24px;font-weight:800;
+  color:var(--text);line-height:1.2;
+}
+.page-title span{
+  background:linear-gradient(135deg,var(--violet2),var(--violet));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.page-sub{font-size:13.5px;color:var(--text3);margin-top:4px}
+
+/* ============================================================
+   STATS ROW
+============================================================ */
+.tracker-stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;margin-bottom:26px;
+  animation:fadeUp 0.4s ease 0.06s both;
+}
+.tstat-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:16px 18px;
+  position:relative;overflow:hidden;
+  transition:var(--transition);
+}
+.tstat-card:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--shadow);
+}
+.tstat-card::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:2px;
+}
+.tstat-card.total::before{background:var(--violet)}
+.tstat-card.saved::before{background:var(--amber)}
+.tstat-card.applied::before{background:var(--blue)}
+.tstat-card.rejected::before{background:var(--red)}
+.tstat-icon{
+  font-size:17px;margin-bottom:10px;
+}
+.tstat-card.total .tstat-icon{color:var(--violet2)}
+.tstat-card.saved .tstat-icon{color:var(--amber)}
+.tstat-card.applied .tstat-icon{color:var(--blue)}
+.tstat-card.rejected .tstat-icon{color:var(--red)}
+.tstat-num{
+  font-family:var(--font-head);
+  font-size:26px;font-weight:800;
+  color:var(--text);line-height:1;margin-bottom:4px;
+}
+.tstat-label{
+  font-size:11.5px;color:var(--text3);font-weight:500;
+}
+
+/* ============================================================
+   KANBAN BOARD
+============================================================ */
+.kanban-board{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+  min-height:500px;
+  animation:fadeUp 0.4s ease 0.12s both;
+}
+
+/* ============================================================
+   KANBAN COLUMN
+============================================================ */
+.kanban-col{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--radius-xl);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  min-height:500px;
+}
+.col-header{
+  padding:16px 18px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.col-title-row{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:2px;
+}
+.col-dot{
+  width:10px;height:10px;border-radius:50%;flex-shrink:0;
+}
+.col-dot.saved{background:var(--amber)}
+.col-dot.applied{background:var(--blue)}
+.col-dot.rejected{background:var(--red)}
+.col-title{
+  font-family:var(--font-head);
+  font-size:14px;font-weight:700;color:var(--text);flex:1;
+}
+.col-count{
+  font-size:11px;font-weight:700;
+  padding:2px 9px;border-radius:100px;
+}
+.col-count.saved{
+  background:var(--amber-bg);color:var(--amber);
+  border:1px solid var(--amber-border);
+}
+.col-count.applied{
+  background:var(--blue-bg);color:var(--blue);
+  border:1px solid var(--blue-border);
+}
+.col-count.rejected{
+  background:var(--red-bg);color:var(--red);
+  border:1px solid var(--red-border);
+}
+.col-sub{font-size:11.5px;color:var(--text3)}
+
+.col-body{
+  flex:1;overflow-y:auto;
+  padding:14px;
+  display:flex;flex-direction:column;gap:10px;
+}
+
+/* drop target */
+.col-body.drag-over{
+  background:var(--violet-glow);
+  border-radius:0 0 var(--radius-xl) var(--radius-xl);
+  border:2px dashed rgba(124,111,250,0.4);
+}
+
+/* ============================================================
+   KANBAN CARD
+============================================================ */
+.k-card{
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:var(--radius-lg);
+  padding:14px 16px;
+  cursor:grab;
+  transition:var(--transition);
+  position:relative;overflow:hidden;
+  animation:fadeUp 0.35s ease both;
+}
+.k-card:hover{
+  border-color:var(--border2);
+  transform:translateY(-2px);
+  box-shadow:var(--shadow);
+}
+.k-card.dragging{
+  opacity:0.5;cursor:grabbing;
+  transform:rotate(2deg) scale(1.02);
+}
+.k-card::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:2px;
+}
+.k-card.score-green::before{background:var(--green)}
+.k-card.score-amber::before{background:var(--amber)}
+.k-card.score-red::before{background:var(--red)}
+
+.k-card-top{
+  display:flex;align-items:flex-start;
+  justify-content:space-between;gap:8px;
+  margin-bottom:10px;
+}
+.k-logo{
+  width:36px;height:36px;min-width:36px;
+  border-radius:9px;
+  background:var(--surface3);
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);font-size:13px;font-weight:800;
+  color:var(--violet2);flex-shrink:0;
+}
+.k-info{flex:1;overflow:hidden}
+.k-title{
+  font-family:var(--font-head);
+  font-size:13px;font-weight:700;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  margin-bottom:3px;
+}
+.k-company{
+  font-size:11.5px;color:var(--text3);
+  display:flex;align-items:center;gap:5px;
+}
+.k-score{
+  font-family:var(--font-head);
+  font-size:17px;font-weight:800;
+  flex-shrink:0;
+}
+.k-score.green{color:var(--green)}
+.k-score.amber{color:var(--amber)}
+.k-score.red{color:var(--red)}
+
+/* score bar on k-card */
+.k-bar-wrap{
+  height:3px;background:var(--surface3);
+  border-radius:3px;overflow:hidden;
+  margin-bottom:10px;
+}
+.k-bar-fill{
+  height:100%;border-radius:3px;width:0%;
+  transition:width 1s cubic-bezier(0.4,0,0.2,1) 0.2s;
+}
+.k-bar-fill.green{background:var(--green)}
+.k-bar-fill.amber{background:var(--amber)}
+.k-bar-fill.red{background:var(--red)}
+
+/* meta row */
+.k-meta{
+  display:flex;align-items:center;gap:8px;
+  flex-wrap:wrap;margin-bottom:10px;
+}
+.k-meta-item{
+  display:flex;align-items:center;gap:4px;
+  font-size:11px;color:var(--text3);
+}
+.k-meta-item i{font-size:10px}
+
+/* notes */
+.k-notes{
+  font-size:11.5px;color:var(--text2);
+  background:var(--surface3);
+  border-radius:var(--radius);
+  padding:7px 10px;margin-bottom:10px;
+  font-style:italic;line-height:1.5;
+  display:none;
+}
+.k-notes.show{display:block}
+
+/* card actions */
+.k-actions{
+  display:flex;gap:6px;flex-wrap:wrap;
+  padding-top:10px;border-top:1px solid var(--border);
+}
+.k-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 10px;border-radius:var(--radius);
+  font-family:var(--font-body);font-size:11px;font-weight:600;
+  cursor:pointer;transition:var(--transition);border:none;
+  white-space:nowrap;
+}
+.k-btn.apply{
+  background:var(--violet);color:#fff;flex:1;justify-content:center;
+}
+.k-btn.apply:hover{
+  background:var(--violet2);
+  box-shadow:var(--shadow-v);
+}
+.k-btn.move{
+  background:var(--surface3);color:var(--text2);
+  border:1px solid var(--border);
+}
+.k-btn.move:hover{
+  background:var(--surface2);color:var(--text);
+  border-color:var(--border2);
+}
+.k-btn.note-btn{
+  background:var(--surface3);color:var(--text3);
+  border:1px solid var(--border);
+}
+.k-btn.note-btn:hover{
+  background:var(--amber-bg);color:var(--amber);
+  border-color:var(--amber-border);
+}
+.k-btn.remove{
+  background:transparent;color:var(--text3);
+  border:1px solid var(--border);
+  width:28px;justify-content:center;padding:5px;
+}
+.k-btn.remove:hover{
+  background:var(--red-bg);color:var(--red);
+  border-color:var(--red-border);
+}
+
+/* move dropdown */
+.move-menu{
+  position:absolute;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  overflow:hidden;
+  z-index:50;
+  box-shadow:var(--shadow);
+  min-width:130px;
+}
+.move-option{
+  padding:9px 14px;
+  font-size:12.5px;color:var(--text2);
+  cursor:pointer;
+  transition:background 0.15s;
+  display:flex;align-items:center;gap:8px;
+}
+.move-option:hover{background:var(--violet-glow);color:var(--text)}
+.move-option i{font-size:12px}
+
+/* ============================================================
+   COLUMN EMPTY STATE
+============================================================ */
+.col-empty{
+  text-align:center;padding:36px 16px;
+  color:var(--text3);
+}
+.col-empty-icon{font-size:28px;margin-bottom:10px;opacity:0.3}
+.col-empty-text{font-size:12.5px;line-height:1.5}
+
+/* ============================================================
+   NOTES MODAL
+============================================================ */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(10,10,15,0.8);
+  backdrop-filter:blur(5px);
+  z-index:800;
+  align-items:center;justify-content:center;
+}
+.modal-overlay.show{display:flex}
+.modal{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--radius-xl);
+  padding:28px;width:100%;max-width:420px;
+  position:relative;
+  animation:fadeUp 0.3s ease;
+  box-shadow:var(--shadow);
+}
+.modal::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,
+    transparent,var(--violet),var(--violet2),transparent);
+}
+.modal-title{
+  font-family:var(--font-head);
+  font-size:16px;font-weight:700;
+  color:var(--text);margin-bottom:6px;
+}
+.modal-sub{font-size:12.5px;color:var(--text3);margin-bottom:18px}
+.modal-textarea{
+  width:100%;min-height:120px;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  color:var(--text);
+  font-family:var(--font-body);font-size:13.5px;
+  line-height:1.6;padding:14px;resize:none;outline:none;
+  transition:var(--transition);
+}
+.modal-textarea:focus{
+  border-color:var(--violet);
+  box-shadow:0 0 0 3px rgba(124,111,250,0.1);
+}
+.modal-actions{
+  display:flex;gap:10px;margin-top:16px;
+}
+.modal-btn{
+  flex:1;padding:11px;border-radius:var(--radius);
+  font-family:var(--font-body);font-size:13px;font-weight:600;
+  cursor:pointer;transition:var(--transition);border:none;
+}
+.modal-btn.save{background:var(--violet);color:#fff}
+.modal-btn.save:hover{background:var(--violet2);box-shadow:var(--shadow-v)}
+.modal-btn.cancel{
+  background:var(--surface2);color:var(--text2);
+  border:1px solid var(--border2);
+}
+.modal-btn.cancel:hover{background:var(--surface3);color:var(--text)}
+
+/* ============================================================
+   TOAST
+============================================================ */
+.toast-container{
+  position:fixed;bottom:28px;right:28px;
+  z-index:9999;display:flex;flex-direction:column;gap:10px;
+}
+.toast{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 18px;background:var(--surface2);
+  border:1px solid var(--border2);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow);min-width:280px;max-width:360px;
+  animation:slideIn 0.35s ease;font-size:13.5px;color:var(--text);
+}
+@keyframes slideIn{
+  from{opacity:0;transform:translateX(30px)}
+  to{opacity:1;transform:translateX(0)}
+}
+.toast-icon{font-size:16px;flex-shrink:0}
+.toast.success .toast-icon{color:var(--green)}
+.toast.error   .toast-icon{color:var(--red)}
+.toast.info    .toast-icon{color:var(--violet2)}
+.toast-close{
+  background:none;border:none;color:var(--text3);
+  cursor:pointer;font-size:13px;padding:0;
+  transition:color 0.2s;margin-left:auto;
+}
+.toast-close:hover{color:var(--text)}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- NOTES MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title">
+      <i class="fa fa-pen" style="color:var(--violet2);margin-right:8px"></i>
+      Add Note
+    </div>
+    <div class="modal-sub" id="modalSub">
+      Add a note for this job application
+    </div>
+    <textarea
+      class="modal-textarea"
+      id="modalTextarea"
+      placeholder="e.g. Applied on LinkedIn, interview on Friday..."
+    ></textarea>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-btn save" onclick="saveNote()">Save Note</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHELL -->
+<div class="shell">
+
+  <!-- ======================================================
+       SIDEBAR
+  ====================================================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-toggle" onclick="toggleSidebar()">
+      <i class="fa fa-chevron-left" id="toggleIcon"></i>
+    </div>
+    <div class="sidebar-brand">
+      <div class="brand-icon">🤖</div>
+      <div class="brand-text">
+        <div class="brand-title">AI Job Hunter</div>
+        <div class="brand-sub">Pro Edition</div>
+      </div>
+    </div>
+    <div style="padding:14px 14px 0">
+      <div class="user-card">
+        <div class="user-avatar" id="sidebarAvatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebarName">Loading...</div>
+          <div class="user-role" id="sidebarRole">Job Seeker</div>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar-nav" style="margin-top:10px">
+      <div class="nav-section-label">Menu</div>
+      <div class="nav-item" onclick="location.href='/dashboard'">
+        <i class="fa fa-house nav-icon"></i>
+        <span class="nav-label">Dashboard</span>
+      </div>
+      <div class="nav-item" onclick="location.href='/jobs'">
+        <i class="fa fa-briefcase nav-icon"></i>
+        <span class="nav-label">Job Results</span>
+      </div>
+      <div class="nav-item active">
+        <i class="fa fa-kanban nav-icon"></i>
+        <span class="nav-label">Job Tracker</span>
+      </div>
+      <div class="nav-item" onclick="location.href='/history'">
+        <i class="fa fa-clock-rotate-left nav-icon"></i>
+        <span class="nav-label">Search History</span>
+      </div>
+    </nav>
+    <div class="sidebar-bottom">
+      <button class="btn-logout" onclick="handleLogout()">
+        <i class="fa fa-right-from-bracket"></i>
+        <span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ======================================================
+       MAIN
+  ====================================================== -->
+  <div class="main">
+
+    <!-- topbar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="topbar-back" onclick="location.href='/dashboard'">
+          <i class="fa fa-arrow-left"></i> Dashboard
+        </button>
+        <div class="topbar-title">
+          Job <span>Tracker</span>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button class="topbar-btn" onclick="location.href='/jobs'">
+          <i class="fa fa-briefcase"></i> Job Results
+        </button>
+        <button
+          class="topbar-btn primary"
+          onclick="location.href='/dashboard'"
+        >
+          <i class="fa fa-magnifying-glass"></i> New Search
+        </button>
+      </div>
+    </div>
+
+    <!-- content -->
+    <div class="content">
+
+      <!-- page header -->
+      <div class="page-header">
+        <div>
+          <div class="page-title">
+            Application <span>Tracker</span>
+          </div>
+          <div class="page-sub">
+            Track every job — saved, applied, and rejected
+          </div>
+        </div>
+      </div>
+
+      <!-- stats -->
+      <div class="tracker-stats">
+        <div class="tstat-card total">
+          <div class="tstat-icon"><i class="fa fa-layer-group"></i></div>
+          <div class="tstat-num" id="statTotal">0</div>
+          <div class="tstat-label">Total Tracked</div>
+        </div>
+        <div class="tstat-card saved">
+          <div class="tstat-icon"><i class="fa fa-bookmark"></i></div>
+          <div class="tstat-num" id="statSaved">0</div>
+          <div class="tstat-label">Saved</div>
+        </div>
+        <div class="tstat-card applied">
+          <div class="tstat-icon"><i class="fa fa-paper-plane"></i></div>
+          <div class="tstat-num" id="statApplied">0</div>
+          <div class="tstat-label">Applied</div>
+        </div>
+        <div class="tstat-card rejected">
+          <div class="tstat-icon"><i class="fa fa-xmark"></i></div>
+          <div class="tstat-num" id="statRejected">0</div>
+          <div class="tstat-label">Rejected</div>
+        </div>
+      </div>
+
+      <!-- kanban board -->
+      <div class="kanban-board">
+
+        <!-- SAVED column -->
+        <div class="kanban-col">
+          <div class="col-header">
+            <div class="col-title-row">
+              <div class="col-dot saved"></div>
+              <div class="col-title">Saved</div>
+              <span class="col-count saved" id="count-saved">0</span>
+            </div>
+            <div class="col-sub">Jobs you want to apply to</div>
+          </div>
+          <div
+            class="col-body"
+            id="col-saved"
+            ondragover="onDragOver(event,'saved')"
+            ondragleave="onDragLeave(event)"
+            ondrop="onDrop(event,'saved')"
+          ></div>
+        </div>
+
+        <!-- APPLIED column -->
+        <div class="kanban-col">
+          <div class="col-header">
+            <div class="col-title-row">
+              <div class="col-dot applied"></div>
+              <div class="col-title">Applied</div>
+              <span class="col-count applied" id="count-applied">0</span>
+            </div>
+            <div class="col-sub">Applications submitted</div>
+          </div>
+          <div
+            class="col-body"
+            id="col-applied"
+            ondragover="onDragOver(event,'applied')"
+            ondragleave="onDragLeave(event)"
+            ondrop="onDrop(event,'applied')"
+          ></div>
+        </div>
+
+        <!-- REJECTED column -->
+        <div class="kanban-col">
+          <div class="col-header">
+            <div class="col-title-row">
+              <div class="col-dot rejected"></div>
+              <div class="col-title">Rejected / Skipped</div>
+              <span class="col-count rejected" id="count-rejected">0</span>
+            </div>
+            <div class="col-sub">Not a fit or no response</div>
+          </div>
+          <div
+            class="col-body"
+            id="col-rejected"
+            ondragover="onDragOver(event,'rejected')"
+            ondragleave="onDragLeave(event)"
+            ondrop="onDrop(event,'rejected')"
+          ></div>
+        </div>
+
+      </div><!-- /kanban-board -->
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+/* ============================================================
+   STATE
+============================================================ */
+let trackerData   = {saved:[],applied:[],rejected:[]};
+let draggedItemId = null;
+let noteJobId     = null;
+
+/* ============================================================
+   INIT
+============================================================ */
+document.addEventListener('DOMContentLoaded',()=>{
+  loadUser();
+  loadTracker();
+  restoreSidebar();
+});
+
+/* ============================================================
+   RESTORE SIDEBAR
+============================================================ */
+function restoreSidebar(){
+  if(localStorage.getItem('sidebarCollapsed')==='true'){
+    document.getElementById('sidebar').classList.add('collapsed');
+    document.getElementById('toggleIcon').style.transform='rotate(180deg)';
+  }
+}
+
+/* ============================================================
+   LOAD USER
+============================================================ */
+async function loadUser(){
+  try{
+    const res =await fetch('/api/auth/me',{credentials:'include'});
+    const data=await res.json();
+    if(!data.success){location.href='/';return;}
+    const init=data.user.name.charAt(0).toUpperCase();
+    document.getElementById('sidebarAvatar').textContent=init;
+    document.getElementById('sidebarName').textContent=data.user.name;
+    document.getElementById('sidebarRole').textContent=
+      data.resume?.seniority?`${data.resume.seniority} Level`:'Job Seeker';
+  }catch(e){location.href='/';}
+}
+
+/* ============================================================
+   LOAD TRACKER
+============================================================ */
+async function loadTracker(){
+  try{
+    const res =await fetch('/api/tracker',{credentials:'include'});
+    const data=await res.json();
+    if(!data.success){showToast('Failed to load tracker.','error');return;}
+
+    trackerData=data.tracker||{saved:[],applied:[],rejected:[]};
+    renderAll();
+    updateStats();
+  }catch(e){
+    showToast('Failed to load tracker.','error');
+  }
+}
+
+/* ============================================================
+   UPDATE STATS
+============================================================ */
+function updateStats(){
+  const s=trackerData.saved?.length    || 0;
+  const a=trackerData.applied?.length  || 0;
+  const r=trackerData.rejected?.length || 0;
+  const t=s+a+r;
+
+  animateNumber('statTotal',   t);
+  animateNumber('statSaved',   s);
+  animateNumber('statApplied', a);
+  animateNumber('statRejected',r);
+
+  document.getElementById('count-saved').textContent    = s;
+  document.getElementById('count-applied').textContent  = a;
+  document.getElementById('count-rejected').textContent = r;
+}
+
+function animateNumber(id,target){
+  const el=document.getElementById(id);
+  const dur=700;const start=performance.now();
+  const tick=now=>{
+    const t=Math.min((now-start)/dur,1);
+    el.textContent=Math.round(t*target);
+    if(t<1)requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+/* ============================================================
+   RENDER ALL COLUMNS
+============================================================ */
+function renderAll(){
+  renderColumn('saved');
+  renderColumn('applied');
+  renderColumn('rejected');
+}
+
+function renderColumn(status){
+  const col   =document.getElementById(`col-${status}`);
+  const items =trackerData[status]||[];
+
+  if(!items.length){
+    col.innerHTML=`
+      <div class="col-empty">
+        <div class="col-empty-icon">
+          ${status==='saved'?'🔖':status==='applied'?'✉️':'🗑️'}
+        </div>
+        <div class="col-empty-text">
+          ${status==='saved'
+            ?'Save jobs from results to track them here'
+            :status==='applied'
+            ?'Move jobs here when you apply'
+            :'Jobs you skipped will appear here'}
+        </div>
+      </div>`;
+    return;
+  }
+
+  col.innerHTML=items.map((item,i)=>
+    buildKCard(item,status,i)
+  ).join('');
+
+  /* animate score bars */
+  requestAnimationFrame(()=>{
+    items.forEach(item=>{
+      const job=item.job||{};
+      const bar=document.getElementById(`kbar-${item.id}`);
+      if(bar)bar.style.width=(job.score||0)+'%';
+    });
+  });
+}
+
+/* ============================================================
+   BUILD KANBAN CARD
+============================================================ */
+function buildKCard(item,status,idx){
+  const job    = item.job||{};
+  const color  = job.score_color||job.color||'red';
+  const score  = job.score||0;
+  const logo   = (job.company||'J').charAt(0).toUpperCase();
+  const delay  = idx*0.06;
+  const hasNote= item.notes && item.notes.trim().length>0;
+
+  /* move options depending on current column */
+  const moveOptions={
+    saved:   [{status:'applied',label:'Mark Applied',icon:'fa-paper-plane'},
+              {status:'rejected',label:'Skip / Reject',icon:'fa-xmark'}],
+    applied: [{status:'saved',  label:'Move to Saved', icon:'fa-bookmark'},
+              {status:'rejected',label:'Mark Rejected', icon:'fa-xmark'}],
+    rejected:[{status:'saved',  label:'Move to Saved', icon:'fa-bookmark'},
+              {status:'applied', label:'Mark Applied',  icon:'fa-paper-plane'}],
+  };
+
+  return `
+  <div
+    class="k-card score-${color}"
+    id="kcard-${item.id}"
+    draggable="true"
+    style="animation-delay:${delay}s"
+    ondragstart="onDragStart(event,${item.id})"
+    ondragend="onDragEnd(event)"
+  >
+    <div class="k-card-top">
+      <div class="k-logo">${logo}</div>
+      <div class="k-info">
+        <div class="k-title" title="${job.title||''}">${job.title||'Untitled'}</div>
+        <div class="k-company">
+          <i class="fa fa-building" style="font-size:10px"></i>
+          ${job.company||'Unknown'}
+        </div>
+      </div>
+      <div class="k-score ${color}">${score}%</div>
+    </div>
+
+    <div class="k-bar-wrap">
+      <div class="k-bar-fill ${color}" id="kbar-${item.id}"></div>
+    </div>
+
+    <div class="k-meta">
+      <span class="k-meta-item">
+        <i class="fa fa-location-dot"></i>
+        ${job.location||'Remote'}
+      </span>
+      <span class="k-meta-item">
+        <i class="fa fa-briefcase"></i>
+        ${job.job_type||'Full-time'}
+      </span>
+    </div>
+
+    ${hasNote?`
+    <div class="k-notes show" id="knote-${item.id}">
+      <i class="fa fa-note-sticky" style="margin-right:5px;color:var(--amber)"></i>
+      ${item.notes}
+    </div>`:
+    `<div class="k-notes" id="knote-${item.id}"></div>`}
+
+    <div class="k-actions">
+      <button
+        class="k-btn apply"
+        onclick="applyJob('${job.url||''}',${job.id||0})"
+      >
+        <i class="fa fa-arrow-up-right-from-square"></i>
+        Apply
+      </button>
+
+      <div style="position:relative">
+        <button
+          class="k-btn move"
+          onclick="toggleMoveMenu(${item.id},this)"
+        >
+          <i class="fa fa-arrows-up-down"></i>
+          Move
+        </button>
+        <div
+          class="move-menu"
+          id="menu-${item.id}"
+          style="display:none;top:110%;left:0"
+        >
+          ${(moveOptions[status]||[]).map(o=>`
+          <div
+            class="move-option"
+            onclick="moveCard(${item.id},'${status}','${o.status}')"
+          >
+            <i class="fa ${o.icon}"></i>${o.label}
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <button
+        class="k-btn note-btn"
+        onclick="openNoteModal(${item.id},'${(job.title||'').replace(/'/g,"\\'")}','${item.notes||''}')"
+        title="Add note"
+      >
+        <i class="fa fa-note-sticky"></i>
+      </button>
+
+      <button
+        class="k-btn remove"
+        onclick="removeCard(${item.id},'${status}')"
+        title="Remove"
+      >
+        <i class="fa fa-trash"></i>
+      </button>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   APPLY JOB
+============================================================ */
+function applyJob(url,jobId){
+  if(url&&url!=='undefined'&&url!==''){
+    window.open(url,'_blank');
+    updateStatus(jobId,'applied','applied');
+  }else{
+    showToast('Job URL not available.','error');
+  }
+}
+
+/* ============================================================
+   MOVE CARD
+============================================================ */
+async function moveCard(itemId,fromStatus,toStatus){
+  /* close menu */
+  document.querySelectorAll('.move-menu').forEach(m=>
+    m.style.display='none'
+  );
+
+  /* find item */
+  const fromList  =trackerData[fromStatus]||[];
+  const itemIndex =fromList.findIndex(i=>i.id===itemId);
+  if(itemIndex===-1)return;
+
+  const item=[...fromList][itemIndex];
+  const jobId=item.job?.id||item.job_id;
+
+  const ok=await updateStatus(jobId,toStatus,itemId);
+  if(ok){
+    /* update local state */
+    trackerData[fromStatus].splice(itemIndex,1);
+    item.status=toStatus;
+    if(!trackerData[toStatus])trackerData[toStatus]=[];
+    trackerData[toStatus].unshift(item);
+
+    /* re-render both columns */
+    renderColumn(fromStatus);
+    renderColumn(toStatus);
+    updateStats();
+
+    showToast(`Moved to ${toStatus}!`,'success');
+  }
+}
+
+async function updateStatus(jobId,status,itemId){
+  try{
+    const res =await fetch('/api/tracker/update',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      credentials:'include',
+      body:JSON.stringify({job_id:jobId,status})
+    });
+    const data=await res.json();
+    return data.success;
+  }catch(e){
+    showToast('Update failed.','error');
+    return false;
+  }
+}
+
+/* ============================================================
+   REMOVE CARD
+============================================================ */
+function removeCard(itemId,status){
+  const card=document.getElementById(`kcard-${itemId}`);
+  if(card){
+    card.style.transition='all 0.3s ease';
+    card.style.opacity='0';
+    card.style.transform='scale(0.9)';
+    setTimeout(()=>{
+      trackerData[status]=trackerData[status].filter(i=>i.id!==itemId);
+      renderColumn(status);
+      updateStats();
+    },300);
+  }
+  showToast('Removed from tracker.','info');
+}
+
+/* ============================================================
+   MOVE MENU TOGGLE
+============================================================ */
+function toggleMoveMenu(itemId,btn){
+  const menu=document.getElementById(`menu-${itemId}`);
+  const allMenus=document.querySelectorAll('.move-menu');
+
+  /* close all others */
+  allMenus.forEach(m=>{
+    if(m.id!==`menu-${itemId}`)m.style.display='none';
+  });
+
+  menu.style.display=menu.style.display==='none'?'block':'none';
+}
+
+/* close menus on outside click */
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.move-menu')&&
+     !e.target.closest('.k-btn.move')){
+    document.querySelectorAll('.move-menu').forEach(m=>
+      m.style.display='none'
+    );
+  }
+});
+
+/* ============================================================
+   DRAG AND DROP
+============================================================ */
+function onDragStart(e,itemId){
+  draggedItemId=itemId;
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed='move';
+}
+function onDragEnd(e){
+  e.currentTarget.classList.remove('dragging');
+  draggedItemId=null;
+  document.querySelectorAll('.col-body').forEach(c=>
+    c.classList.remove('drag-over')
+  );
+}
+function onDragOver(e,status){
+  e.preventDefault();
+  e.dataTransfer.dropEffect='move';
+  e.currentTarget.classList.add('drag-over');
+}
+function onDragLeave(e){
+  e.currentTarget.classList.remove('drag-over');
+}
+function onDrop(e,toStatus){
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if(!draggedItemId)return;
+
+  /* find from status */
+  let fromStatus=null;
+  for(const s of['saved','applied','rejected']){
+    if((trackerData[s]||[]).find(i=>i.id===draggedItemId)){
+      fromStatus=s;break;
+    }
+  }
+  if(!fromStatus||fromStatus===toStatus)return;
+  moveCard(draggedItemId,fromStatus,toStatus);
+}
+
+/* ============================================================
+   NOTES MODAL
+============================================================ */
+function openNoteModal(itemId,title,existingNote){
+  noteJobId=itemId;
+  document.getElementById('modalSub').textContent=
+    `Note for: ${title}`;
+  document.getElementById('modalTextarea').value=
+    existingNote||'';
+  document.getElementById('modalOverlay').classList.add('show');
+}
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('show');
+  noteJobId=null;
+}
+async function saveNote(){
+  if(!noteJobId)return;
+  const notes=document.getElementById('modalTextarea').value.trim();
+
+  /* update locally */
+  for(const status of['saved','applied','rejected']){
+    const item=(trackerData[status]||[]).find(i=>i.id===noteJobId);
+    if(item){
+      item.notes=notes;
+      const noteEl=document.getElementById(`knote-${noteJobId}`);
+      if(noteEl){
+        noteEl.innerHTML=notes
+          ?`<i class="fa fa-note-sticky" style="margin-right:5px;color:var(--amber)"></i>${notes}`
+          :'';
+        noteEl.className=notes?'k-notes show':'k-notes';
+      }
+      break;
+    }
+  }
+
+  /* save via tracker update */
+  try{
+    const item=
+      [...(trackerData.saved||[]),
+       ...(trackerData.applied||[]),
+       ...(trackerData.rejected||[])
+      ].find(i=>i.id===noteJobId);
+
+    if(item){
+      await fetch('/api/tracker/update',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        credentials:'include',
+        body:JSON.stringify({
+          job_id:item.job?.id||item.job_id,
+          status:item.status,
+          notes
+        })
+      });
+    }
+  }catch(e){console.error(e)}
+
+  closeModal();
+  showToast('Note saved!','success');
+}
+
+/* ============================================================
+   SIDEBAR TOGGLE
+============================================================ */
+function toggleSidebar(){
+  const sb  =document.getElementById('sidebar');
+  const icon=document.getElementById('toggleIcon');
+  sb.classList.toggle('collapsed');
+  const col=sb.classList.contains('collapsed');
+  icon.style.transform=col?'rotate(180deg)':'rotate(0deg)';
+  localStorage.setItem('sidebarCollapsed',col);
+}
+
+/* ============================================================
+   LOGOUT
+============================================================ */
+async function handleLogout(){
+  try{
+    await fetch('/api/auth/logout',{method:'POST',credentials:'include'});
+  }catch(_){}
+  location.href='/';
+}
+
+/* ============================================================
+   TOAST
+============================================================ */
+function showToast(msg,type='info'){
+  const icons={
+    success:'fa-circle-check',
+    error:  'fa-circle-exclamation',
+    info:   'fa-circle-info'
+  };
+  const id='toast_'+Date.now();
+  const html=`
+    <div class="toast ${type}" id="${id}">
+      <i class="fa ${icons[type]||icons.info} toast-icon"></i>
+      <span class="toast-msg">${msg}</span>
+      <button class="toast-close" onclick="removeToast('${id}')">
+        <i class="fa fa-xmark"></i>
+      </button>
+    </div>`;
+  document.getElementById('toastContainer')
+    .insertAdjacentHTML('beforeend',html);
+  setTimeout(()=>removeToast(id),4500);
+}
+function removeToast(id){
+  const el=document.getElementById(id);
+  if(el)el.remove();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AI Job Hunter Pro — Search History</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+/* ============================================================
+   RESET + ROOT
+============================================================ */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;
+  --surface:#12121a;
+  --surface2:#1a1a28;
+  --surface3:#22223a;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.13);
+  --violet:#7c6ffa;
+  --violet2:#a78bfa;
+  --violet-glow:rgba(124,111,250,0.18);
+  --green:#22d47b;
+  --green-bg:rgba(34,212,123,0.10);
+  --green-border:rgba(34,212,123,0.28);
+  --amber:#f59e0b;
+  --amber-bg:rgba(245,158,11,0.10);
+  --amber-border:rgba(245,158,11,0.28);
+  --red:#f25252;
+  --red-bg:rgba(242,82,82,0.10);
+  --red-border:rgba(242,82,82,0.28);
+  --text:#f0f0ff;
+  --text2:#9999bb;
+  --text3:#55557a;
+  --font-head:'Syne',sans-serif;
+  --font-body:'Space Grotesk',sans-serif;
+  --sidebar-w:260px;
+  --sidebar-sm:72px;
+  --topbar-h:64px;
+  --radius:10px;
+  --radius-lg:16px;
+  --radius-xl:22px;
+  --shadow:0 4px 24px rgba(0,0,0,0.4);
+  --shadow-v:0 4px 20px rgba(124,111,250,0.3);
+  --transition:all 0.28s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ============================================================
+   BASE
+============================================================ */
+html,body{
+  height:100%;background:var(--bg);
+  color:var(--text);font-family:var(--font-body);
+  font-size:15px;line-height:1.6;overflow:hidden;
+}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:var(--violet)}
+
+/* ============================================================
+   SHELL
+============================================================ */
+.shell{display:flex;height:100vh;overflow:hidden}
+
+/* ============================================================
+   SIDEBAR
+============================================================ */
+.sidebar{
+  width:var(--sidebar-w);min-width:var(--sidebar-w);
+  height:100vh;background:var(--surface);
+  border-right:1px solid var(--border2);
+  display:flex;flex-direction:column;
+  transition:var(--transition);
+  position:relative;z-index:100;overflow:hidden;
+}
+.sidebar.collapsed{
+  width:var(--sidebar-sm);
+  min-width:var(--sidebar-sm);
+}
+.sidebar-brand{
+  display:flex;align-items:center;gap:11px;
+  padding:0 18px;height:var(--topbar-h);
+  border-bottom:1px solid var(--border);
+  overflow:hidden;flex-shrink:0;
+}
+.brand-icon{
+  width:36px;height:36px;min-width:36px;
+  background:var(--violet-glow);
+  border:1px solid rgba(124,111,250,0.35);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;flex-shrink:0;
+}
+.brand-text{overflow:hidden;white-space:nowrap}
+.brand-title{
+  font-family:var(--font-head);font-size:15px;font-weight:800;
+  background:linear-gradient(135deg,#fff 0%,var(--violet2) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;line-height:1.2;
+}
+.brand-sub{
+  font-size:10px;color:var(--text3);
+  letter-spacing:0.05em;text-transform:uppercase;
+}
+.sidebar-toggle{
+  position:absolute;top:50%;right:-13px;
+  transform:translateY(-50%);
+  width:26px;height:26px;background:var(--surface3);
+  border:1px solid var(--border2);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:11px;color:var(--text2);
+  transition:var(--transition);z-index:10;
+}
+.sidebar-toggle:hover{
+  background:var(--violet);color:#fff;border-color:var(--violet);
+}
+.user-card{
+  display:flex;align-items:center;gap:10px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:10px 12px;overflow:hidden;
+}
+.user-avatar{
+  width:36px;height:36px;min-width:36px;border-radius:50%;
+  background:linear-gradient(135deg,var(--violet),var(--violet2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);font-size:14px;font-weight:700;
+  color:#fff;flex-shrink:0;
+}
+.user-info{overflow:hidden;flex:1}
+.user-name{
+  font-family:var(--font-head);font-size:13px;font-weight:700;
+  color:var(--text);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;
+}
+.user-role{font-size:10.5px;color:var(--text3);white-space:nowrap}
+.sidebar-nav{flex:1;overflow-y:auto;padding:10px}
+.nav-section-label{
+  font-size:10px;font-weight:600;color:var(--text3);
+  text-transform:uppercase;letter-spacing:0.1em;
+  padding:8px 8px 5px;white-space:nowrap;overflow:hidden;
+}
+.sidebar.collapsed .nav-section-label{opacity:0}
+.nav-item{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 12px;border-radius:var(--radius);
+  cursor:pointer;transition:var(--transition);
+  margin-bottom:3px;overflow:hidden;
+  position:relative;white-space:nowrap;color:var(--text2);
+}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{
+  background:var(--violet-glow);color:var(--violet2);
+  border:1px solid rgba(124,111,250,0.18);
+}
+.nav-item.active::before{
+  content:'';position:absolute;left:0;top:20%;bottom:20%;
+  width:3px;border-radius:0 3px 3px 0;background:var(--violet);
+}
+.nav-icon{font-size:16px;min-width:18px;text-align:center;flex-shrink:0}
+.nav-label{
+  font-size:13.5px;font-weight:500;
+  overflow:hidden;text-overflow:ellipsis;
+}
+.sidebar.collapsed .nav-label{display:none}
+.sidebar.collapsed .nav-item{justify-content:center;padding:12px}
+.sidebar-bottom{
+  padding:12px;border-top:1px solid var(--border);flex-shrink:0;
+}
+.btn-logout{
+  width:100%;display:flex;align-items:center;gap:10px;
+  padding:10px 12px;background:transparent;
+  border:1px solid var(--border2);border-radius:var(--radius);
+  color:var(--text2);font-family:var(--font-body);
+  font-size:13px;font-weight:500;cursor:pointer;
+  transition:var(--transition);overflow:hidden;white-space:nowrap;
+}
+.btn-logout:hover{
+  background:var(--red-bg);
+  border-color:rgba(242,82,82,0.3);color:var(--red);
+}
+.sidebar.collapsed .btn-logout{justify-content:center;padding:10px}
+.sidebar.collapsed .btn-logout span{display:none}
+
+/* ============================================================
+   MAIN
+============================================================ */
+.main{
+  flex:1;display:flex;flex-direction:column;
+  overflow:hidden;min-width:0;
+}
+
+/* ============================================================
+   TOPBAR
+============================================================ */
+.topbar{
+  height:var(--topbar-h);min-height:var(--topbar-h);
+  background:var(--surface);border-bottom:1px solid var(--border2);
+  display:flex;align-items:center;
+  padding:0 28px;gap:16px;flex-shrink:0;
+}
+.topbar-left{display:flex;align-items:center;gap:14px;flex:1}
+.topbar-back{
+  display:flex;align-items:center;gap:7px;
+  padding:8px 14px;background:transparent;
+  border:1px solid var(--border2);border-radius:var(--radius);
+  color:var(--text2);font-family:var(--font-body);
+  font-size:13px;font-weight:500;cursor:pointer;
+  transition:var(--transition);
+}
+.topbar-back:hover{background:var(--surface2);color:var(--text)}
+.topbar-title{
+  font-family:var(--font-head);
+  font-size:18px;font-weight:700;color:var(--text);
+}
+.topbar-title span{color:var(--violet2)}
+.topbar-actions{display:flex;align-items:center;gap:10px}
+.topbar-btn{
+  display:flex;align-items:center;gap:7px;
+  padding:8px 16px;background:transparent;
+  border:1px solid var(--border2);border-radius:var(--radius);
+  color:var(--text2);font-family:var(--font-body);
+  font-size:13px;font-weight:500;cursor:pointer;
+  transition:var(--transition);white-space:nowrap;
+}
+.topbar-btn:hover{background:var(--surface2);color:var(--text)}
+.topbar-btn.primary{
+  background:var(--violet);border-color:var(--violet);color:#fff;
+}
+.topbar-btn.primary:hover{
+  background:var(--violet2);
+  box-shadow:var(--shadow-v);transform:translateY(-1px);
+}
+.topbar-btn.danger{
+  background:transparent;
+  border-color:rgba(242,82,82,0.35);color:var(--red);
+}
+.topbar-btn.danger:hover{
+  background:var(--red-bg);
+  border-color:var(--red-border);
+}
+
+/* ============================================================
+   CONTENT
+============================================================ */
+.content{flex:1;overflow-y:auto;padding:28px}
+
+/* ============================================================
+   PAGE HEADER
+============================================================ */
+.page-header{
+  display:flex;align-items:flex-start;
+  justify-content:space-between;
+  margin-bottom:24px;flex-wrap:wrap;gap:14px;
+  animation:fadeUp 0.4s ease forwards;
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.page-title{
+  font-family:var(--font-head);
+  font-size:24px;font-weight:800;
+  color:var(--text);line-height:1.2;
+}
+.page-title span{
+  background:linear-gradient(135deg,var(--violet2),var(--violet));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.page-sub{font-size:13.5px;color:var(--text3);margin-top:4px}
+
+/* ============================================================
+   STATS ROW
+============================================================ */
+.history-stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;margin-bottom:26px;
+  animation:fadeUp 0.4s ease 0.06s both;
+}
+.hstat{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:16px 18px;
+  position:relative;overflow:hidden;
+  transition:var(--transition);
+}
+.hstat:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.hstat::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+}
+.hstat:nth-child(1)::before{background:var(--violet)}
+.hstat:nth-child(2)::before{background:var(--green)}
+.hstat:nth-child(3)::before{background:var(--amber)}
+.hstat:nth-child(4)::before{background:var(--red)}
+.hstat-icon{font-size:17px;margin-bottom:10px}
+.hstat:nth-child(1) .hstat-icon{color:var(--violet2)}
+.hstat:nth-child(2) .hstat-icon{color:var(--green)}
+.hstat:nth-child(3) .hstat-icon{color:var(--amber)}
+.hstat:nth-child(4) .hstat-icon{color:var(--red)}
+.hstat-num{
+  font-family:var(--font-head);
+  font-size:26px;font-weight:800;
+  color:var(--text);line-height:1;margin-bottom:4px;
+}
+.hstat-label{font-size:11.5px;color:var(--text3);font-weight:500}
+
+/* ============================================================
+   SEARCH + FILTER BAR
+============================================================ */
+.toolbar{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:20px;flex-wrap:wrap;
+  animation:fadeUp 0.4s ease 0.1s both;
+}
+.search-wrap{
+  flex:1;position:relative;min-width:200px;
+}
+.search-wrap i{
+  position:absolute;left:13px;top:50%;
+  transform:translateY(-50%);
+  color:var(--text3);font-size:14px;
+  pointer-events:none;
+}
+.search-input{
+  width:100%;
+  padding:10px 14px 10px 38px;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  color:var(--text);font-family:var(--font-body);font-size:13.5px;
+  outline:none;transition:var(--transition);
+}
+.search-input::placeholder{color:var(--text3)}
+.search-input:focus{
+  border-color:var(--violet);
+  box-shadow:0 0 0 3px rgba(124,111,250,0.1);
+}
+.filter-select{
+  padding:10px 14px;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  color:var(--text2);font-family:var(--font-body);font-size:13px;
+  cursor:pointer;outline:none;
+  transition:var(--transition);
+  appearance:none;
+  padding-right:28px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239999bb'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 10px center;
+  background-color:var(--surface);
+}
+.filter-select:focus{border-color:var(--violet);color:var(--text)}
+
+/* ============================================================
+   HISTORY LIST
+============================================================ */
+.history-list{
+  display:flex;flex-direction:column;gap:12px;
+  animation:fadeUp 0.4s ease 0.14s both;
+}
+
+/* ============================================================
+   HISTORY ITEM
+============================================================ */
+.history-item{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--radius-xl);
+  padding:20px 22px;
+  display:flex;align-items:center;gap:18px;
+  transition:var(--transition);
+  position:relative;overflow:hidden;
+  animation:fadeUp 0.35s ease both;
+}
+.history-item:hover{
+  border-color:rgba(124,111,250,0.25);
+  transform:translateY(-1px);
+  box-shadow:var(--shadow);
+}
+.history-item::before{
+  content:'';
+  position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--violet);opacity:0;
+  transition:opacity 0.2s;
+}
+.history-item:hover::before{opacity:1}
+
+/* index number */
+.h-index{
+  width:38px;height:38px;min-width:38px;
+  border-radius:10px;
+  background:var(--violet-glow);
+  border:1px solid rgba(124,111,250,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);font-size:14px;font-weight:700;
+  color:var(--violet2);flex-shrink:0;
+}
+
+/* query section */
+.h-query{flex:1;overflow:hidden}
+.h-query-text{
+  font-family:var(--font-head);
+  font-size:15px;font-weight:700;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  margin-bottom:5px;
+}
+.h-meta{
+  display:flex;align-items:center;
+  gap:14px;flex-wrap:wrap;
+}
+.h-meta-item{
+  display:flex;align-items:center;gap:5px;
+  font-size:12px;color:var(--text3);
+}
+.h-meta-item i{font-size:11px}
+
+/* results pill */
+.h-results{
+  flex-shrink:0;
+  display:flex;flex-direction:column;
+  align-items:center;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:10px 16px;
+  text-align:center;
+  min-width:80px;
+}
+.h-results-num{
+  font-family:var(--font-head);
+  font-size:20px;font-weight:800;color:var(--violet2);
+  line-height:1;
+}
+.h-results-label{
+  font-size:10.5px;color:var(--text3);margin-top:3px;
+}
+
+/* action buttons */
+.h-actions{
+  display:flex;gap:8px;flex-shrink:0;
+}
+.h-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;border-radius:var(--radius);
+  font-family:var(--font-body);font-size:12.5px;font-weight:600;
+  cursor:pointer;transition:var(--transition);border:none;
+  white-space:nowrap;
+}
+.h-btn.rerun{
+  background:var(--violet);color:#fff;
+}
+.h-btn.rerun:hover{
+  background:var(--violet2);
+  box-shadow:var(--shadow-v);transform:translateY(-1px);
+}
+.h-btn.rerun:disabled{
+  opacity:0.5;cursor:not-allowed;
+  transform:none;box-shadow:none;
+}
+.h-btn.view{
+  background:var(--surface2);color:var(--text2);
+  border:1px solid var(--border2);
+}
+.h-btn.view:hover{
+  background:var(--surface3);color:var(--text);
+}
+.h-btn.del{
+  background:transparent;color:var(--text3);
+  border:1px solid var(--border);
+  padding:8px;width:36px;justify-content:center;
+}
+.h-btn.del:hover{
+  background:var(--red-bg);color:var(--red);
+  border-color:var(--red-border);
+}
+
+/* spinner inside rerun */
+.btn-spin{
+  display:none;
+  width:12px;height:12px;
+  border:2px solid rgba(255,255,255,0.3);
+  border-top-color:#fff;border-radius:50%;
+  animation:spin 0.7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.h-btn.rerun.running .btn-spin{display:block}
+.h-btn.rerun.running .btn-label{display:none}
+
+/* ============================================================
+   EMPTY STATE
+============================================================ */
+.empty-state{
+  text-align:center;padding:80px 24px;
+  animation:fadeUp 0.5s ease forwards;
+}
+.empty-icon{font-size:52px;margin-bottom:18px;opacity:0.3}
+.empty-title{
+  font-family:var(--font-head);font-size:20px;font-weight:700;
+  color:var(--text2);margin-bottom:10px;
+}
+.empty-sub{
+  font-size:14px;color:var(--text3);
+  line-height:1.6;margin-bottom:24px;
+}
+.btn-start{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 26px;background:var(--violet);
+  border:none;border-radius:var(--radius);
+  color:#fff;font-family:var(--font-head);
+  font-size:14px;font-weight:700;cursor:pointer;
+  transition:var(--transition);
+}
+.btn-start:hover{
+  background:var(--violet2);
+  box-shadow:var(--shadow-v);transform:translateY(-2px);
+}
+
+/* ============================================================
+   CONFIRM MODAL
+============================================================ */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(10,10,15,0.8);
+  backdrop-filter:blur(5px);
+  z-index:800;
+  align-items:center;justify-content:center;
+}
+.modal-overlay.show{display:flex}
+.modal{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--radius-xl);
+  padding:28px;width:100%;max-width:400px;
+  position:relative;
+  animation:fadeUp 0.3s ease;
+  box-shadow:var(--shadow);
+}
+.modal::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,
+    transparent,var(--red),transparent);
+}
+.modal-icon{
+  width:48px;height:48px;
+  background:var(--red-bg);border:1px solid var(--red-border);
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;color:var(--red);margin-bottom:16px;
+}
+.modal-title{
+  font-family:var(--font-head);
+  font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px;
+}
+.modal-sub{font-size:13px;color:var(--text3);line-height:1.6;margin-bottom:22px}
+.modal-actions{display:flex;gap:10px}
+.modal-btn{
+  flex:1;padding:11px;border-radius:var(--radius);
+  font-family:var(--font-body);font-size:13px;font-weight:600;
+  cursor:pointer;transition:var(--transition);border:none;
+}
+.modal-btn.confirm{
+  background:var(--red);color:#fff;
+}
+.modal-btn.confirm:hover{
+  background:#d43f3f;box-shadow:0 4px 15px rgba(242,82,82,0.3);
+}
+.modal-btn.cancel{
+  background:var(--surface2);color:var(--text2);
+  border:1px solid var(--border2);
+}
+.modal-btn.cancel:hover{background:var(--surface3);color:var(--text)}
+
+/* ============================================================
+   TOAST
+============================================================ */
+.toast-container{
+  position:fixed;bottom:28px;right:28px;
+  z-index:9999;display:flex;flex-direction:column;gap:10px;
+}
+.toast{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 18px;background:var(--surface2);
+  border:1px solid var(--border2);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow);min-width:280px;max-width:360px;
+  animation:slideIn 0.35s ease;font-size:13.5px;color:var(--text);
+}
+@keyframes slideIn{
+  from{opacity:0;transform:translateX(30px)}
+  to{opacity:1;transform:translateX(0)}
+}
+.toast-icon{font-size:16px;flex-shrink:0}
+.toast.success .toast-icon{color:var(--green)}
+.toast.error   .toast-icon{color:var(--red)}
+.toast.info    .toast-icon{color:var(--violet2)}
+.toast-close{
+  background:none;border:none;color:var(--text3);
+  cursor:pointer;font-size:13px;padding:0;
+  transition:color 0.2s;margin-left:auto;
+}
+.toast-close:hover{color:var(--text)}
+
+/* ============================================================
+   EXPORT CSV LINK
+============================================================ */
+.export-row{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  padding:14px 18px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  margin-bottom:18px;
+  animation:fadeUp 0.4s ease 0.12s both;
+}
+.export-label{
+  font-size:13px;color:var(--text2);
+  display:flex;align-items:center;gap:8px;
+}
+.export-label i{color:var(--violet2)}
+.btn-export{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;
+  background:var(--violet-glow);
+  border:1px solid rgba(124,111,250,0.3);
+  border-radius:var(--radius);
+  color:var(--violet2);
+  font-family:var(--font-body);font-size:12.5px;font-weight:600;
+  cursor:pointer;transition:var(--transition);
+}
+.btn-export:hover{
+  background:var(--violet);color:#fff;
+  border-color:var(--violet);
+}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-icon">
+      <i class="fa fa-triangle-exclamation"></i>
+    </div>
+    <div class="modal-title">Clear All History?</div>
+    <div class="modal-sub">
+      This will permanently delete all your search history
+      and associated job results. This action cannot be undone.
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeModal()">
+        Cancel
+      </button>
+      <button class="modal-btn confirm" onclick="confirmClear()">
+        Yes, Clear All
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SHELL -->
+<div class="shell">
+
+  <!-- ======================================================
+       SIDEBAR
+  ====================================================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-toggle" onclick="toggleSidebar()">
+      <i class="fa fa-chevron-left" id="toggleIcon"></i>
+    </div>
+    <div class="sidebar-brand">
+      <div class="brand-icon">🤖</div>
+      <div class="brand-text">
+        <div class="brand-title">AI Job Hunter</div>
+        <div class="brand-sub">Pro Edition</div>
+      </div>
+    </div>
+    <div style="padding:14px 14px 0">
+      <div class="user-card">
+        <div class="user-avatar" id="sidebarAvatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebarName">Loading...</div>
+          <div class="user-role" id="sidebarRole">Job Seeker</div>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar-nav" style="margin-top:10px">
+      <div class="nav-section-label">Menu</div>
+      <div class="nav-item" onclick="location.href='/dashboard'">
+        <i class="fa fa-house nav-icon"></i>
+        <span class="nav-label">Dashboard</span>
+      </div>
+      <div class="nav-item" onclick="location.href='/jobs'">
+        <i class="fa fa-briefcase nav-icon"></i>
+        <span class="nav-label">Job Results</span>
+      </div>
+      <div class="nav-item" onclick="location.href='/tracker'">
+        <i class="fa fa-kanban nav-icon"></i>
+        <span class="nav-label">Job Tracker</span>
+      </div>
+      <div class="nav-item active">
+        <i class="fa fa-clock-rotate-left nav-icon"></i>
+        <span class="nav-label">Search History</span>
+      </div>
+    </nav>
+    <div class="sidebar-bottom">
+      <button class="btn-logout" onclick="handleLogout()">
+        <i class="fa fa-right-from-bracket"></i>
+        <span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ======================================================
+       MAIN
+  ====================================================== -->
+  <div class="main">
+
+    <!-- topbar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="topbar-back" onclick="location.href='/dashboard'">
+          <i class="fa fa-arrow-left"></i> Dashboard
+        </button>
+        <div class="topbar-title">
+          Search <span>History</span>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button
+          class="topbar-btn danger"
+          onclick="openClearModal()"
+          id="clearBtn"
+          style="display:none"
+        >
+          <i class="fa fa-trash"></i> Clear All
+        </button>
+        <button
+          class="topbar-btn primary"
+          onclick="location.href='/dashboard'"
+        >
+          <i class="fa fa-magnifying-glass"></i> New Search
+        </button>
+      </div>
+    </div>
+
+    <!-- content -->
+    <div class="content">
+
+      <!-- page header -->
+      <div class="page-header">
+        <div>
+          <div class="page-title">
+            Search <span>History</span>
+          </div>
+          <div class="page-sub">
+            All your past job searches — re-run anytime
+          </div>
+        </div>
+      </div>
+
+      <!-- stats row -->
+      <div class="history-stats">
+        <div class="hstat">
+          <div class="hstat-icon">
+            <i class="fa fa-clock-rotate-left"></i>
+          </div>
+          <div class="hstat-num" id="statSearches">0</div>
+          <div class="hstat-label">Total Searches</div>
+        </div>
+        <div class="hstat">
+          <div class="hstat-icon">
+            <i class="fa fa-briefcase"></i>
+          </div>
+          <div class="hstat-num" id="statJobs">0</div>
+          <div class="hstat-label">Jobs Found</div>
+        </div>
+        <div class="hstat">
+          <div class="hstat-icon">
+            <i class="fa fa-chart-line"></i>
+          </div>
+          <div class="hstat-num" id="statAvg">0</div>
+          <div class="hstat-label">Avg Jobs/Search</div>
+        </div>
+        <div class="hstat">
+          <div class="hstat-icon">
+            <i class="fa fa-calendar-days"></i>
+          </div>
+          <div class="hstat-num" id="statDays">0</div>
+          <div class="hstat-label">Days Active</div>
+        </div>
+      </div>
+
+      <!-- export row -->
+      <div class="export-row" id="exportRow" style="display:none">
+        <div class="export-label">
+          <i class="fa fa-file-csv"></i>
+          Export your search history as a spreadsheet
+        </div>
+        <button class="btn-export" onclick="exportCSV()">
+          <i class="fa fa-download"></i>
+          Export CSV
+        </button>
+      </div>
+
+      <!-- toolbar -->
+      <div class="toolbar">
+        <div class="search-wrap">
+          <i class="fa fa-magnifying-glass"></i>
+          <input
+            class="search-input"
+            id="filterInput"
+            type="text"
+            placeholder="Filter searches..."
+            oninput="filterHistory()"
+          />
+        </div>
+        <select
+          class="filter-select"
+          id="sortSelect"
+          onchange="sortHistory()"
+        >
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="most">Most Results</option>
+          <option value="least">Fewest Results</option>
+        </select>
+      </div>
+
+      <!-- history list -->
+      <div class="history-list" id="historyList">
+        <!-- populated by JS -->
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+/* ============================================================
+   STATE
+============================================================ */
+let allHistory     = [];
+let filteredHistory= [];
+
+/* ============================================================
+   INIT
+============================================================ */
+document.addEventListener('DOMContentLoaded',()=>{
+  loadUser();
+  loadHistory();
+  restoreSidebar();
+});
+
+/* ============================================================
+   RESTORE SIDEBAR
+============================================================ */
+function restoreSidebar(){
+  if(localStorage.getItem('sidebarCollapsed')==='true'){
+    document.getElementById('sidebar').classList.add('collapsed');
+    document.getElementById('toggleIcon').style.transform='rotate(180deg)';
+  }
+}
+
+/* ============================================================
+   LOAD USER
+============================================================ */
+async function loadUser(){
+  try{
+    const res =await fetch('/api/auth/me',{credentials:'include'});
+    const data=await res.json();
+    if(!data.success){location.href='/';return;}
+    const init=data.user.name.charAt(0).toUpperCase();
+    document.getElementById('sidebarAvatar').textContent=init;
+    document.getElementById('sidebarName').textContent  =data.user.name;
+    document.getElementById('sidebarRole').textContent  =
+      data.resume?.seniority
+        ?`${data.resume.seniority} Level`:'Job Seeker';
+  }catch(e){location.href='/';}
+}
+
+/* ============================================================
+   LOAD HISTORY
+============================================================ */
+async function loadHistory(){
+  try{
+    const res =await fetch('/api/history',{credentials:'include'});
+    const data=await res.json();
+    if(!data.success){
+      showEmpty();return;
+    }
+    allHistory     =data.searches||[];
+    filteredHistory=[...allHistory];
+    renderHistory(filteredHistory);
+    updateStats(allHistory);
+
+    if(allHistory.length){
+      document.getElementById('clearBtn').style.display='flex';
+      document.getElementById('exportRow').style.display='flex';
+    }
+  }catch(e){
+    showToast('Failed to load history.','error');
+    showEmpty();
+  }
+}
+
+/* ============================================================
+   UPDATE STATS
+============================================================ */
+function updateStats(searches){
+  const total    =searches.length;
+  const totalJobs=searches.reduce((s,h)=>s+(h.results_count||0),0);
+  const avg      =total?Math.round(totalJobs/total):0;
+
+  /* days active — unique days */
+  const days=new Set(
+    searches.map(s=>new Date(s.created_at).toDateString())
+  ).size;
+
+  animateNumber('statSearches',total);
+  animateNumber('statJobs',    totalJobs);
+  animateNumber('statAvg',     avg);
+  animateNumber('statDays',    days);
+}
+
+function animateNumber(id,target){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const dur=700;const start=performance.now();
+  const tick=now=>{
+    const t=Math.min((now-start)/dur,1);
+    el.textContent=Math.round(t*target);
+    if(t<1)requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+/* ============================================================
+   RENDER HISTORY
+============================================================ */
+function renderHistory(searches){
+  const list=document.getElementById('historyList');
+
+  if(!searches||!searches.length){
+    showEmpty();return;
+  }
+
+  list.innerHTML=searches.map((s,i)=>buildHistoryItem(s,i)).join('');
+}
+
+/* ============================================================
+   BUILD HISTORY ITEM
+============================================================ */
+function buildHistoryItem(search,idx){
+  const date    =formatDate(search.created_at);
+  const timeAgo =getTimeAgo(search.created_at);
+  const results =search.results_count||0;
+  const delay   =idx*0.055;
+
+  return `
+  <div
+    class="history-item"
+    id="hitem-${search.id}"
+    style="animation-delay:${delay}s"
+  >
+    <div class="h-index">${idx+1}</div>
+
+    <div class="h-query">
+      <div class="h-query-text" title="${escHtml(search.query)}">
+        ${escHtml(search.query)}
+      </div>
+      <div class="h-meta">
+        <span class="h-meta-item">
+          <i class="fa fa-calendar"></i>${date}
+        </span>
+        <span class="h-meta-item">
+          <i class="fa fa-clock"></i>${timeAgo}
+        </span>
+        <span class="h-meta-item">
+          <i class="fa fa-hashtag"></i>Search #${search.id}
+        </span>
+      </div>
+    </div>
+
+    <div class="h-results">
+      <div class="h-results-num">${results}</div>
+      <div class="h-results-label">
+        ${results===1?'Job':'Jobs'}
+      </div>
+    </div>
+
+    <div class="h-actions">
+      <button
+        class="h-btn view"
+        onclick="viewResults(${search.id})"
+        title="View results"
+        ${results===0?'disabled style="opacity:0.4;cursor:not-allowed"':''}
+      >
+        <i class="fa fa-eye"></i>
+        View
+      </button>
+      <button
+        class="h-btn rerun"
+        id="rerun-${search.id}"
+        onclick="rerunSearch(${search.id},'${escAttr(search.query)}')"
+        title="Re-run this search"
+      >
+        <span class="btn-label">
+          <i class="fa fa-rotate-right"></i>
+          Re-run
+        </span>
+        <div class="btn-spin"></div>
+      </button>
+      <button
+        class="h-btn del"
+        onclick="deleteItem(${search.id})"
+        title="Delete"
+      >
+        <i class="fa fa-trash"></i>
+      </button>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   VIEW RESULTS
+============================================================ */
+function viewResults(searchId){
+  sessionStorage.setItem('searchId',searchId);
+  location.href='/jobs?search_id='+searchId;
+}
+
+/* ============================================================
+   RE-RUN SEARCH
+============================================================ */
+async function rerunSearch(searchId,query){
+  const btn=document.getElementById(`rerun-${searchId}`);
+  if(btn){
+    btn.classList.add('running');
+    btn.disabled=true;
+  }
+
+  try{
+    const res =await fetch('/api/search',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      credentials:'include',
+      body:JSON.stringify({query})
+    });
+    const data=await res.json();
+
+    if(data.success){
+      sessionStorage.setItem('searchResults',
+        JSON.stringify(data.jobs)
+      );
+      sessionStorage.setItem('searchId',data.search_id);
+      showToast(`Found ${data.total} jobs!`,'success');
+      setTimeout(()=>location.href='/jobs',800);
+    }else{
+      showToast(data.error||'Re-run failed.','error');
+      if(btn){btn.classList.remove('running');btn.disabled=false;}
+    }
+  }catch(e){
+    showToast('Re-run failed. Check connection.','error');
+    if(btn){btn.classList.remove('running');btn.disabled=false;}
+  }
+}
+
+/* ============================================================
+   DELETE SINGLE ITEM
+============================================================ */
+function deleteItem(searchId){
+  const el=document.getElementById(`hitem-${searchId}`);
+  if(el){
+    el.style.transition='all 0.3s ease';
+    el.style.opacity='0';
+    el.style.transform='translateX(20px)';
+    setTimeout(()=>{
+      el.remove();
+      allHistory=allHistory.filter(s=>s.id!==searchId);
+      filteredHistory=filteredHistory.filter(s=>s.id!==searchId);
+      updateStats(allHistory);
+      if(!allHistory.length)showEmpty();
+    },320);
+  }
+  showToast('Search removed.','info');
+}
+
+/* ============================================================
+   FILTER + SORT
+============================================================ */
+function filterHistory(){
+  const q=document.getElementById('filterInput')
+    .value.trim().toLowerCase();
+  filteredHistory=allHistory.filter(s=>
+    s.query.toLowerCase().includes(q)
+  );
+  sortHistory();
+}
+
+function sortHistory(){
+  const sort=document.getElementById('sortSelect').value;
+  const arr=[...filteredHistory];
+
+  if(sort==='newest')
+    arr.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  if(sort==='oldest')
+    arr.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+  if(sort==='most')
+    arr.sort((a,b)=>(b.results_count||0)-(a.results_count||0));
+  if(sort==='least')
+    arr.sort((a,b)=>(a.results_count||0)-(b.results_count||0));
+
+  renderHistory(arr);
+}
+
+/* ============================================================
+   EXPORT CSV
+============================================================ */
+function exportCSV(){
+  const rows=[
+    ['#','Query','Results','Date','Search ID']
+  ];
+  allHistory.forEach((s,i)=>{
+    rows.push([
+      i+1,
+      `"${s.query.replace(/"/g,'""')}"`,
+      s.results_count||0,
+      formatDate(s.created_at),
+      s.id
+    ]);
+  });
+  const csv =rows.map(r=>r.join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url =URL.createObjectURL(blob);
+  const a   =document.createElement('a');
+  a.href    =url;
+  a.download='job_search_history.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('History exported as CSV!','success');
+}
+
+/* ============================================================
+   CLEAR ALL MODAL
+============================================================ */
+function openClearModal(){
+  document.getElementById('modalOverlay').classList.add('show');
+}
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+async function confirmClear(){
+  closeModal();
+  try{
+    const res =await fetch('/api/history/clear',{
+      method:'DELETE',credentials:'include'
+    });
+    const data=await res.json();
+    if(data.success){
+      allHistory=[];filteredHistory=[];
+      updateStats([]);
+      showEmpty();
+      document.getElementById('clearBtn').style.display='none';
+      document.getElementById('exportRow').style.display='none';
+      showToast('All history cleared.','info');
+    }else{
+      showToast(data.error||'Clear failed.','error');
+    }
+  }catch(e){
+    showToast('Failed to clear history.','error');
+  }
+}
+
+/* ============================================================
+   EMPTY STATE
+============================================================ */
+function showEmpty(){
+  document.getElementById('historyList').innerHTML=`
+    <div class="empty-state">
+      <div class="empty-icon">🕐</div>
+      <div class="empty-title">No search history yet</div>
+      <div class="empty-sub">
+        Your job searches will appear here.<br/>
+        Start searching to build your history.
+      </div>
+      <button class="btn-start" onclick="location.href='/dashboard'">
+        <i class="fa fa-magnifying-glass"></i>
+        Start Searching
+      </button>
+    </div>`;
+}
+
+/* ============================================================
+   DATE HELPERS
+============================================================ */
+function formatDate(iso){
+  const d=new Date(iso);
+  return d.toLocaleDateString('en-IN',{
+    day:'numeric',month:'short',year:'numeric'
+  });
+}
+
+function getTimeAgo(iso){
+  const diff =Date.now()-new Date(iso).getTime();
+  const mins =Math.floor(diff/60000);
+  const hours=Math.floor(diff/3600000);
+  const days =Math.floor(diff/86400000);
+  if(mins<1)  return 'just now';
+  if(mins<60) return `${mins}m ago`;
+  if(hours<24)return `${hours}h ago`;
+  if(days<7)  return `${days}d ago`;
+  return     `${Math.floor(days/7)}w ago`;
+}
+
+/* ============================================================
+   ESCAPE HELPERS
+============================================================ */
+function escHtml(str){
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+function escAttr(str){
+  return String(str).replace(/'/g,"\\'");
+}
+
+/* ============================================================
+   SIDEBAR TOGGLE
+============================================================ */
+function toggleSidebar(){
+  const sb  =document.getElementById('sidebar');
+  const icon=document.getElementById('toggleIcon');
+  sb.classList.toggle('collapsed');
+  const col=sb.classList.contains('collapsed');
+  icon.style.transform=col?'rotate(180deg)':'rotate(0deg)';
+  localStorage.setItem('sidebarCollapsed',col);
+}
+
+/* ============================================================
+   LOGOUT
+============================================================ */
+async function handleLogout(){
+  try{
+    await fetch('/api/auth/logout',{method:'POST',credentials:'include'});
+  }catch(_){}
+  location.href='/';
+}
+
+/* ============================================================
+   TOAST
+============================================================ */
+function showToast(msg,type='info'){
+  const icons={
+    success:'fa-circle-check',
+    error:  'fa-circle-exclamation',
+    info:   'fa-circle-info'
+  };
+  const id  ='toast_'+Date.now();
+  const html=`
+    <div class="toast ${type}" id="${id}">
+      <i class="fa ${icons[type]||icons.info} toast-icon"></i>
+      <span class="toast-msg">${msg}</span>
+      <button class="toast-close" onclick="removeToast('${id}')">
+        <i class="fa fa-xmark"></i>
+      </button>
+    </div>`;
+  document.getElementById('toastContainer')
+    .insertAdjacentHTML('beforeend',html);
+  setTimeout(()=>removeToast(id),4500);
+}
+function removeToast(id){
+  const el=document.getElementById(id);
+  if(el)el.remove();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AI Job Hunter Pro — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+/* ============================================================
+   RESET + ROOT
+============================================================ */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:          #0a0a0f;
+  --surface:     #12121a;
+  --surface2:    #1a1a28;
+  --surface3:    #22223a;
+  --border:      rgba(255,255,255,0.07);
+  --border2:     rgba(255,255,255,0.13);
+  --violet:      #7c6ffa;
+  --violet2:     #a78bfa;
+  --violet-glow: rgba(124,111,250,0.18);
+  --green:       #22d47b;
+  --green-bg:    rgba(34,212,123,0.10);
+  --green-border:rgba(34,212,123,0.25);
+  --amber:       #f59e0b;
+  --amber-bg:    rgba(245,158,11,0.10);
+  --red:         #f25252;
+  --red-bg:      rgba(242,82,82,0.10);
+  --text:        #f0f0ff;
+  --text2:       #9999bb;
+  --text3:       #55557a;
+  --font-head:   'Syne',sans-serif;
+  --font-body:   'Space Grotesk',sans-serif;
+  --sidebar-w:   260px;
+  --sidebar-sm:  72px;
+  --topbar-h:    64px;
+  --radius:      10px;
+  --radius-lg:   16px;
+  --radius-xl:   22px;
+  --shadow:      0 4px 24px rgba(0,0,0,0.4);
+  --shadow-v:    0 4px 20px rgba(124,111,250,0.3);
+  --transition:  all 0.28s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ============================================================
+   BASE
+============================================================ */
+html,body{
+  height:100%;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:15px;
+  line-height:1.6;
+  overflow:hidden;
+}
+
+/* ============================================================
+   SCROLLBAR
+============================================================ */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{
+  background:var(--surface3);
+  border-radius:10px;
+}
+::-webkit-scrollbar-thumb:hover{background:var(--violet)}
+
+/* ============================================================
+   LAYOUT SHELL
+============================================================ */
+.shell{
+  display:flex;
+  height:100vh;
+  overflow:hidden;
+}
+
+/* ============================================================
+   SIDEBAR
+============================================================ */
+.sidebar{
+  width:var(--sidebar-w);
+  min-width:var(--sidebar-w);
+  height:100vh;
+  background:var(--surface);
+  border-right:1px solid var(--border2);
+  display:flex;
+  flex-direction:column;
+  transition:var(--transition);
+  position:relative;
+  z-index:100;
+  overflow:hidden;
+}
+.sidebar.collapsed{
+  width:var(--sidebar-sm);
+  min-width:var(--sidebar-sm);
+}
+
+/* sidebar top — brand */
+.sidebar-brand{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:0 18px;
+  height:var(--topbar-h);
+  border-bottom:1px solid var(--border);
+  overflow:hidden;
+  flex-shrink:0;
+}
+.brand-icon{
+  width:36px;height:36px;
+  min-width:36px;
+  background:var(--violet-glow);
+  border:1px solid rgba(124,111,250,0.35);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;flex-shrink:0;
+}
+.brand-text{overflow:hidden;white-space:nowrap}
+.brand-title{
+  font-family:var(--font-head);
+  font-size:15px;font-weight:800;
+  background:linear-gradient(135deg,#fff 0%,var(--violet2) 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  line-height:1.2;
+}
+.brand-sub{
+  font-size:10px;color:var(--text3);
+  letter-spacing:0.05em;text-transform:uppercase;
+}
+
+/* sidebar toggle button */
+.sidebar-toggle{
+  position:absolute;
+  top:50%;right:-13px;
+  transform:translateY(-50%);
+  width:26px;height:26px;
+  background:var(--surface3);
+  border:1px solid var(--border2);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  font-size:11px;color:var(--text2);
+  transition:var(--transition);
+  z-index:10;
+}
+.sidebar-toggle:hover{
+  background:var(--violet);
+  color:#fff;
+  border-color:var(--violet);
+}
+.sidebar.collapsed .sidebar-toggle i{
+  transform:rotate(180deg);
+}
+
+/* user card inside sidebar */
+.sidebar-user{
+  padding:16px;
+  border-bottom:1px solid var(--border);
+  overflow:hidden;
+  flex-shrink:0;
+}
+.user-card{
+  display:flex;align-items:center;gap:10px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:10px 12px;
+  overflow:hidden;
+}
+.user-avatar{
+  width:36px;height:36px;min-width:36px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--violet),var(--violet2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);
+  font-size:14px;font-weight:700;
+  color:#fff;flex-shrink:0;
+}
+.user-info{overflow:hidden;flex:1}
+.user-name{
+  font-family:var(--font-head);
+  font-size:13px;font-weight:700;
+  color:var(--text);
+  white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;
+}
+.user-role{
+  font-size:10.5px;color:var(--text3);
+  white-space:nowrap;
+}
+
+/* resume status pill in sidebar */
+.resume-pill{
+  display:flex;align-items:center;gap:6px;
+  margin:12px 16px 0;
+  padding:7px 12px;
+  border-radius:100px;
+  font-size:11px;font-weight:600;
+  letter-spacing:0.04em;
+  transition:var(--transition);
+  overflow:hidden;
+  cursor:default;
+  flex-shrink:0;
+}
+.resume-pill.uploaded{
+  background:var(--green-bg);
+  border:1px solid var(--green-border);
+  color:var(--green);
+}
+.resume-pill.missing{
+  background:var(--red-bg);
+  border:1px solid rgba(242,82,82,0.25);
+  color:var(--red);
+}
+.resume-pill .dot{
+  width:6px;height:6px;min-width:6px;
+  border-radius:50%;
+  background:currentColor;
+}
+.sidebar.collapsed .resume-pill{
+  justify-content:center;
+  padding:7px;margin:12px auto 0;
+  width:36px;height:36px;
+}
+.sidebar.collapsed .resume-pill span{display:none}
+
+/* skills in sidebar */
+.sidebar-skills{
+  padding:14px 16px 8px;
+  flex-shrink:0;
+}
+.skills-label{
+  font-size:10px;font-weight:600;
+  color:var(--text3);
+  text-transform:uppercase;letter-spacing:0.08em;
+  margin-bottom:9px;
+  white-space:nowrap;
+}
+.skills-wrap{
+  display:flex;flex-wrap:wrap;gap:5px;
+}
+.skill-tag{
+  font-size:10.5px;font-weight:500;
+  padding:3px 9px;
+  background:var(--violet-glow);
+  border:1px solid rgba(124,111,250,0.2);
+  color:var(--violet2);
+  border-radius:100px;
+  white-space:nowrap;
+}
+.sidebar.collapsed .sidebar-skills{display:none}
+
+/* nav */
+.sidebar-nav{
+  flex:1;overflow-y:auto;
+  padding:10px 10px;
+}
+.nav-section-label{
+  font-size:10px;font-weight:600;
+  color:var(--text3);
+  text-transform:uppercase;letter-spacing:0.1em;
+  padding:8px 8px 5px;
+  white-space:nowrap;
+  overflow:hidden;
+}
+.sidebar.collapsed .nav-section-label{opacity:0}
+
+.nav-item{
+  display:flex;align-items:center;
+  gap:12px;
+  padding:11px 12px;
+  border-radius:var(--radius);
+  cursor:pointer;
+  transition:var(--transition);
+  margin-bottom:3px;
+  overflow:hidden;
+  position:relative;
+  white-space:nowrap;
+  color:var(--text2);
+}
+.nav-item:hover{
+  background:var(--surface2);
+  color:var(--text);
+}
+.nav-item.active{
+  background:var(--violet-glow);
+  color:var(--violet2);
+  border:1px solid rgba(124,111,250,0.18);
+}
+.nav-item.active::before{
+  content:'';
+  position:absolute;left:0;top:20%;bottom:20%;
+  width:3px;border-radius:0 3px 3px 0;
+  background:var(--violet);
+}
+.nav-icon{
+  font-size:16px;min-width:18px;
+  text-align:center;flex-shrink:0;
+}
+.nav-label{
+  font-size:13.5px;font-weight:500;
+  overflow:hidden;text-overflow:ellipsis;
+}
+.nav-badge{
+  margin-left:auto;
+  font-size:10px;font-weight:700;
+  padding:2px 7px;
+  background:var(--violet);
+  color:#fff;
+  border-radius:100px;
+  flex-shrink:0;
+}
+.sidebar.collapsed .nav-label,
+.sidebar.collapsed .nav-badge{display:none}
+.sidebar.collapsed .nav-item{
+  justify-content:center;padding:12px;
+}
+.sidebar.collapsed .nav-item.active::before{
+  top:0;bottom:0;
+}
+
+/* sidebar bottom — logout */
+.sidebar-bottom{
+  padding:12px;
+  border-top:1px solid var(--border);
+  flex-shrink:0;
+}
+.btn-logout{
+  width:100%;display:flex;
+  align-items:center;gap:10px;
+  padding:10px 12px;
+  background:transparent;
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  color:var(--text2);
+  font-family:var(--font-body);
+  font-size:13px;font-weight:500;
+  cursor:pointer;
+  transition:var(--transition);
+  overflow:hidden;white-space:nowrap;
+}
+.btn-logout:hover{
+  background:var(--red-bg);
+  border-color:rgba(242,82,82,0.3);
+  color:var(--red);
+}
+.sidebar.collapsed .btn-logout{
+  justify-content:center;padding:10px;
+}
+.sidebar.collapsed .btn-logout span{display:none}
+
+/* ============================================================
+   MAIN AREA
+============================================================ */
+.main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  min-width:0;
+}
+
+/* ============================================================
+   TOPBAR
+============================================================ */
+.topbar{
+  height:var(--topbar-h);
+  min-height:var(--topbar-h);
+  background:var(--surface);
+  border-bottom:1px solid var(--border2);
+  display:flex;align-items:center;
+  padding:0 28px;gap:16px;
+  flex-shrink:0;
+}
+.topbar-title{
+  font-family:var(--font-head);
+  font-size:18px;font-weight:700;
+  color:var(--text);flex:1;
+}
+.topbar-title span{
+  color:var(--violet2);
+}
+.topbar-actions{
+  display:flex;align-items:center;gap:10px;
+}
+.topbar-btn{
+  display:flex;align-items:center;gap:7px;
+  padding:8px 16px;
+  background:transparent;
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  color:var(--text2);
+  font-family:var(--font-body);
+  font-size:13px;font-weight:500;
+  cursor:pointer;
+  transition:var(--transition);
+  white-space:nowrap;
+}
+.topbar-btn:hover{
+  background:var(--surface2);
+  color:var(--text);
+  border-color:var(--border2);
+}
+.topbar-btn.primary{
+  background:var(--violet);
+  border-color:var(--violet);
+  color:#fff;
+}
+.topbar-btn.primary:hover{
+  background:var(--violet2);
+  box-shadow:var(--shadow-v);
+  transform:translateY(-1px);
+}
+
+/* ============================================================
+   CONTENT AREA
+============================================================ */
+.content{
+  flex:1;
+  overflow-y:auto;
+  padding:28px;
+}
+
+/* ============================================================
+   WELCOME BANNER
+============================================================ */
+.welcome-banner{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--radius-xl);
+  padding:28px 32px;
+  margin-bottom:28px;
+  position:relative;
+  overflow:hidden;
+  animation:fadeUp 0.5s ease forwards;
+}
+.welcome-banner::before{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,
+    rgba(124,111,250,0.08) 0%,
+    transparent 60%);
+  pointer-events:none;
+}
+.welcome-banner::after{
+  content:'';
+  position:absolute;
+  top:-60px;right:-60px;
+  width:200px;height:200px;
+  border-radius:50%;
+  background:radial-gradient(circle,
+    rgba(124,111,250,0.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.welcome-row{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:20px;flex-wrap:wrap;
+}
+.welcome-left{}
+.welcome-greeting{
+  font-size:13px;
+  color:var(--text3);
+  font-weight:500;
+  margin-bottom:5px;
+  letter-spacing:0.03em;
+}
+.welcome-name{
+  font-family:var(--font-head);
+  font-size:26px;font-weight:800;
+  color:var(--text);
+  margin-bottom:8px;
+  line-height:1.2;
+}
+.welcome-name span{
+  background:linear-gradient(135deg,var(--violet2),var(--violet));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.welcome-sub{
+  font-size:13.5px;color:var(--text2);
+  max-width:480px;line-height:1.6;
+}
+
+/* stats row */
+.stats-row{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin-bottom:28px;
+  animation:fadeUp 0.5s ease 0.08s both;
+}
+.stat-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:18px 20px;
+  position:relative;
+  overflow:hidden;
+  transition:var(--transition);
+}
+.stat-card:hover{
+  border-color:var(--border2);
+  transform:translateY(-2px);
+  box-shadow:var(--shadow);
+}
+.stat-card::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:2px;
+}
+.stat-card:nth-child(1)::before{background:var(--violet)}
+.stat-card:nth-child(2)::before{background:var(--green)}
+.stat-card:nth-child(3)::before{background:var(--amber)}
+.stat-card:nth-child(4)::before{background:var(--red)}
+.stat-icon{
+  font-size:18px;margin-bottom:12px;
+  opacity:0.7;
+}
+.stat-card:nth-child(1) .stat-icon{color:var(--violet2)}
+.stat-card:nth-child(2) .stat-icon{color:var(--green)}
+.stat-card:nth-child(3) .stat-icon{color:var(--amber)}
+.stat-card:nth-child(4) .stat-icon{color:var(--red)}
+.stat-num{
+  font-family:var(--font-head);
+  font-size:28px;font-weight:800;
+  color:var(--text);line-height:1;
+  margin-bottom:5px;
+}
+.stat-label{
+  font-size:12px;color:var(--text3);
+  font-weight:500;letter-spacing:0.03em;
+}
+
+/* ============================================================
+   MAIN GRID
+============================================================ */
+.main-grid{
+  display:grid;
+  grid-template-columns:1fr 340px;
+  gap:20px;
+  animation:fadeUp 0.5s ease 0.14s both;
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ============================================================
+   UPLOAD CARD
+============================================================ */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--radius-xl);
+  padding:24px;
+}
+.card-header{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+.card-title{
+  font-family:var(--font-head);
+  font-size:16px;font-weight:700;
+  color:var(--text);
+  display:flex;align-items:center;gap:9px;
+}
+.card-title i{color:var(--violet2)}
+.card-badge{
+  font-size:11px;font-weight:600;
+  padding:3px 10px;
+  border-radius:100px;
+}
+.badge-green{
+  background:var(--green-bg);
+  color:var(--green);
+  border:1px solid var(--green-border);
+}
+.badge-gray{
+  background:var(--surface2);
+  color:var(--text3);
+  border:1px solid var(--border);
+}
+
+/* drop zone */
+.drop-zone{
+  border:2px dashed var(--border2);
+  border-radius:var(--radius-lg);
+  padding:40px 24px;
+  text-align:center;
+  cursor:pointer;
+  transition:var(--transition);
+  position:relative;
+}
+.drop-zone:hover,
+.drop-zone.dragover{
+  border-color:var(--violet);
+  background:var(--violet-glow);
+}
+.drop-zone input[type=file]{
+  position:absolute;inset:0;
+  opacity:0;cursor:pointer;width:100%;height:100%;
+}
+.drop-icon{
+  font-size:36px;
+  color:var(--violet2);
+  margin-bottom:14px;
+  display:block;
+}
+.drop-title{
+  font-family:var(--font-head);
+  font-size:15px;font-weight:700;
+  color:var(--text);margin-bottom:6px;
+}
+.drop-sub{font-size:12.5px;color:var(--text3)}
+.drop-sub span{
+  color:var(--violet2);font-weight:600;cursor:pointer;
+}
+
+/* uploaded state */
+.resume-info{
+  display:none;
+  background:var(--surface2);
+  border:1px solid var(--green-border);
+  border-radius:var(--radius-lg);
+  padding:16px 18px;
+}
+.resume-info.show{display:flex;align-items:center;gap:14px}
+.resume-file-icon{
+  width:42px;height:42px;
+  background:var(--green-bg);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:var(--green);flex-shrink:0;
+}
+.resume-details{flex:1;overflow:hidden}
+.resume-fname{
+  font-size:13.5px;font-weight:600;
+  color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.resume-meta{font-size:11.5px;color:var(--text3);margin-top:3px}
+.btn-reupload{
+  background:transparent;border:none;
+  color:var(--text3);font-size:14px;
+  cursor:pointer;padding:4px;
+  transition:color 0.2s;
+}
+.btn-reupload:hover{color:var(--red)}
+
+/* upload progress */
+.upload-progress{
+  display:none;margin-top:14px;
+}
+.upload-progress.show{display:block}
+.progress-bar-wrap{
+  height:4px;
+  background:var(--surface3);
+  border-radius:4px;overflow:hidden;
+  margin-bottom:7px;
+}
+.progress-bar-fill{
+  height:100%;border-radius:4px;
+  background:linear-gradient(90deg,var(--violet),var(--violet2));
+  width:0%;transition:width 0.4s ease;
+}
+.progress-label{
+  font-size:11.5px;color:var(--text3);
+  display:flex;align-items:center;gap:7px;
+}
+.progress-label i{color:var(--violet2);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ============================================================
+   SEARCH CARD
+============================================================ */
+.search-wrap{margin-top:18px}
+.search-label-row{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  margin-bottom:10px;
+}
+.search-label{
+  font-size:11.5px;font-weight:600;
+  color:var(--text2);
+  text-transform:uppercase;letter-spacing:0.07em;
+}
+.search-box{
+  display:flex;gap:10px;
+  margin-bottom:12px;
+}
+.search-input-wrap{
+  flex:1;position:relative;
+}
+.search-input-wrap i{
+  position:absolute;left:14px;top:50%;
+  transform:translateY(-50%);
+  color:var(--text3);font-size:15px;
+}
+.search-input{
+  width:100%;
+  padding:13px 14px 13px 42px;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:14px;outline:none;
+  transition:var(--transition);
+}
+.search-input::placeholder{color:var(--text3)}
+.search-input:focus{
+  border-color:var(--violet);
+  background:var(--surface3);
+  box-shadow:0 0 0 3px rgba(124,111,250,0.12);
+}
+.btn-search{
+  padding:13px 22px;
+  background:var(--violet);
+  border:none;border-radius:var(--radius);
+  color:#fff;
+  font-family:var(--font-head);
+  font-size:14px;font-weight:700;
+  cursor:pointer;
+  display:flex;align-items:center;gap:8px;
+  transition:var(--transition);
+  white-space:nowrap;
+}
+.btn-search:hover{
+  background:var(--violet2);
+  transform:translateY(-2px);
+  box-shadow:var(--shadow-v);
+}
+.btn-search:disabled{
+  opacity:0.55;cursor:not-allowed;
+  transform:none;box-shadow:none;
+}
+.btn-search .spin{
+  display:none;
+  width:14px;height:14px;
+  border:2px solid rgba(255,255,255,0.3);
+  border-top-color:#fff;border-radius:50%;
+  animation:spin 0.7s linear infinite;
+}
+.btn-search.searching .btn-search-text{display:none}
+.btn-search.searching .spin{display:block}
+
+/* smart search button */
+.btn-smart{
+  width:100%;
+  padding:11px;
+  background:transparent;
+  border:1px dashed rgba(124,111,250,0.35);
+  border-radius:var(--radius);
+  color:var(--violet2);
+  font-family:var(--font-body);
+  font-size:13px;font-weight:500;
+  cursor:pointer;
+  display:flex;align-items:center;
+  justify-content:center;gap:8px;
+  transition:var(--transition);
+}
+.btn-smart:hover{
+  background:var(--violet-glow);
+  border-color:var(--violet);
+}
+
+/* recent searches */
+.recent-label{
+  font-size:11px;color:var(--text3);
+  margin-bottom:8px;
+  text-transform:uppercase;
+  letter-spacing:0.07em;font-weight:600;
+}
+.recent-chips{display:flex;flex-wrap:wrap;gap:6px}
+.recent-chip{
+  font-size:12px;font-weight:500;
+  padding:5px 12px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  color:var(--text2);
+  border-radius:100px;
+  cursor:pointer;
+  transition:var(--transition);
+  display:flex;align-items:center;gap:6px;
+}
+.recent-chip:hover{
+  background:var(--violet-glow);
+  border-color:rgba(124,111,250,0.3);
+  color:var(--violet2);
+}
+.recent-chip i{font-size:10px;opacity:0.6}
+
+/* ============================================================
+   QUICK TIPS CARD (right column)
+============================================================ */
+.tips-card{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--radius-xl);
+  padding:22px;
+  margin-bottom:18px;
+}
+.tip-item{
+  display:flex;align-items:flex-start;
+  gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+.tip-item:last-child{border-bottom:none;padding-bottom:0}
+.tip-item:first-child{padding-top:0}
+.tip-num{
+  width:26px;height:26px;min-width:26px;
+  border-radius:8px;
+  background:var(--violet-glow);
+  border:1px solid rgba(124,111,250,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);
+  font-size:12px;font-weight:700;
+  color:var(--violet2);
+}
+.tip-text{
+  font-size:13px;color:var(--text2);line-height:1.55;
+}
+.tip-text strong{color:var(--text);font-weight:600}
+
+/* ============================================================
+   AI STATUS CARD
+============================================================ */
+.ai-status-card{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--radius-xl);
+  padding:20px 22px;
+}
+.ai-status-row{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:14px;
+}
+.ai-dot{
+  width:10px;height:10px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 0 3px rgba(34,212,123,0.2);
+  animation:pulse-dot 2s ease-in-out infinite;
+  flex-shrink:0;
+}
+@keyframes pulse-dot{
+  0%,100%{box-shadow:0 0 0 3px rgba(34,212,123,0.2)}
+  50%{box-shadow:0 0 0 7px rgba(34,212,123,0.08)}
+}
+.ai-status-title{
+  font-family:var(--font-head);
+  font-size:14px;font-weight:700;
+  color:var(--text);
+}
+.ai-status-sub{
+  font-size:12px;color:var(--text3);line-height:1.5;
+}
+.ai-services{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.ai-service-row{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  font-size:12.5px;
+}
+.ai-service-name{color:var(--text2)}
+.ai-service-badge{
+  font-size:10.5px;font-weight:600;
+  padding:2px 9px;border-radius:100px;
+}
+.badge-online{
+  background:var(--green-bg);
+  color:var(--green);
+  border:1px solid var(--green-border);
+}
+
+/* ============================================================
+   SEARCHING OVERLAY
+============================================================ */
+.search-overlay{
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(10,10,15,0.85);
+  backdrop-filter:blur(6px);
+  z-index:999;
+  align-items:center;justify-content:center;
+}
+.search-overlay.show{display:flex}
+.search-modal{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--radius-xl);
+  padding:42px 48px;
+  text-align:center;
+  max-width:380px;
+  width:90%;
+  animation:fadeUp 0.4s ease;
+}
+.search-spinner{
+  width:56px;height:56px;
+  border:3px solid var(--surface3);
+  border-top-color:var(--violet);
+  border-radius:50%;
+  animation:spin 0.9s linear infinite;
+  margin:0 auto 22px;
+}
+.search-modal-title{
+  font-family:var(--font-head);
+  font-size:18px;font-weight:700;
+  color:var(--text);margin-bottom:8px;
+}
+.search-modal-sub{
+  font-size:13px;color:var(--text3);
+  line-height:1.6;
+}
+.search-steps{
+  margin-top:22px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.search-step{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 14px;
+  background:var(--surface2);
+  border-radius:var(--radius);
+  font-size:12.5px;color:var(--text2);
+  text-align:left;
+  transition:var(--transition);
+}
+.search-step.active{
+  color:var(--violet2);
+  background:var(--violet-glow);
+  border:1px solid rgba(124,111,250,0.2);
+}
+.search-step.done{color:var(--green)}
+.search-step i{font-size:13px;min-width:14px}
+
+/* ============================================================
+   TOAST NOTIFICATION
+============================================================ */
+.toast-container{
+  position:fixed;
+  bottom:28px;right:28px;
+  z-index:9999;
+  display:flex;flex-direction:column;gap:10px;
+}
+.toast{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 18px;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow);
+  min-width:280px;max-width:360px;
+  animation:slideIn 0.35s ease;
+  font-size:13.5px;color:var(--text);
+}
+@keyframes slideIn{
+  from{opacity:0;transform:translateX(30px)}
+  to{opacity:1;transform:translateX(0)}
+}
+.toast-icon{font-size:16px;flex-shrink:0}
+.toast.success .toast-icon{color:var(--green)}
+.toast.error   .toast-icon{color:var(--red)}
+.toast.info    .toast-icon{color:var(--violet2)}
+.toast-msg{flex:1}
+.toast-close{
+  background:none;border:none;
+  color:var(--text3);cursor:pointer;
+  font-size:13px;padding:0;
+  transition:color 0.2s;
+}
+.toast-close:hover{color:var(--text)}
+
+/* ============================================================
+   EMPTY STATE
+============================================================ */
+.empty-state{
+  text-align:center;
+  padding:48px 24px;
+  color:var(--text3);
+}
+.empty-icon{
+  font-size:42px;margin-bottom:16px;
+  opacity:0.4;
+}
+.empty-title{
+  font-family:var(--font-head);
+  font-size:16px;font-weight:700;
+  color:var(--text2);margin-bottom:8px;
+}
+.empty-sub{font-size:13px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     TOAST CONTAINER
+============================================================ -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ============================================================
+     SEARCHING OVERLAY
+============================================================ -->
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-modal">
+    <div class="search-spinner"></div>
+    <div class="search-modal-title">Hunting Jobs for You</div>
+    <div class="search-modal-sub">
+      AI is searching the web, reading job posts,<br/>
+      and scoring matches against your profile...
+    </div>
+    <div class="search-steps">
+      <div class="search-step active" id="step1">
+        <i class="fa fa-magnifying-glass"></i>
+        Searching job listings...
+      </div>
+      <div class="search-step" id="step2">
+        <i class="fa fa-file-lines"></i>
+        Reading job descriptions...
+      </div>
+      <div class="search-step" id="step3">
+        <i class="fa fa-chart-bar"></i>
+        Scoring matches...
+      </div>
+      <div class="search-step" id="step4">
+        <i class="fa fa-pen-nib"></i>
+        Writing cover letters...
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SHELL
+============================================================ -->
+<div class="shell">
+
+  <!-- ========================================================
+       SIDEBAR
+  ======================================================== -->
+  <aside class="sidebar" id="sidebar">
+
+    <!-- toggle -->
+    <div class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">
+      <i class="fa fa-chevron-left" id="toggleIcon"></i>
+    </div>
+
+    <!-- brand -->
+    <div class="sidebar-brand">
+      <div class="brand-icon">🤖</div>
+      <div class="brand-text">
+        <div class="brand-title">AI Job Hunter</div>
+        <div class="brand-sub">Pro Edition</div>
+      </div>
+    </div>
+
+    <!-- user card -->
+    <div style="padding:14px 14px 0">
+      <div class="user-card">
+        <div class="user-avatar" id="sidebarAvatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebarName">Loading...</div>
+          <div class="user-role" id="sidebarRole">Job Seeker</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- resume status -->
+    <div class="resume-pill missing" id="resumePill">
+      <div class="dot"></div>
+      <span id="resumePillText">No Resume</span>
+    </div>
+
+    <!-- skills -->
+    <div class="sidebar-skills" id="sidebarSkills" style="display:none">
+      <div class="skills-label">Your Skills</div>
+      <div class="skills-wrap" id="skillsWrap"></div>
+    </div>
+
+    <!-- nav -->
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Menu</div>
+
+      <div class="nav-item active" onclick="setPage('dashboard')" id="nav-dashboard">
+        <i class="fa fa-house nav-icon"></i>
+        <span class="nav-label">Dashboard</span>
+      </div>
+
+      <div class="nav-item" onclick="navigateTo('/jobs')" id="nav-jobs">
+        <i class="fa fa-briefcase nav-icon"></i>
+        <span class="nav-label">Job Results</span>
+        <span class="nav-badge" id="jobsBadge" style="display:none">0</span>
+      </div>
+
+      <div class="nav-item" onclick="navigateTo('/tracker')" id="nav-tracker">
+        <i class="fa fa-kanban nav-icon"></i>
+        <span class="nav-label">Job Tracker</span>
+      </div>
+
+      <div class="nav-item" onclick="navigateTo('/history')" id="nav-history">
+        <i class="fa fa-clock-rotate-left nav-icon"></i>
+        <span class="nav-label">Search History</span>
+      </div>
+    </nav>
+
+    <!-- bottom logout -->
+    <div class="sidebar-bottom">
+      <button class="btn-logout" onclick="handleLogout()">
+        <i class="fa fa-right-from-bracket"></i>
+        <span>Logout</span>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ========================================================
+       MAIN
+  ======================================================== -->
+  <div class="main">
+
+    <!-- topbar -->
+    <div class="topbar">
+      <div class="topbar-title" id="topbarTitle">
+        Good morning, <span id="topbarName">...</span> 👋
+      </div>
+      <div class="topbar-actions">
+        <button class="topbar-btn" onclick="navigateTo('/history')">
+          <i class="fa fa-clock-rotate-left"></i>
+          History
+        </button>
+        <button class="topbar-btn primary" onclick="document.getElementById('fileInput').click()">
+          <i class="fa fa-upload"></i>
+          Upload Resume
+        </button>
+      </div>
+    </div>
+
+    <!-- content -->
+    <div class="content" id="mainContent">
+
+      <!-- welcome banner -->
+      <div class="welcome-banner">
+        <div class="welcome-row">
+          <div class="welcome-left">
+            <div class="welcome-greeting" id="welcomeGreeting">
+              Ready to find your next opportunity?
+            </div>
+            <div class="welcome-name">
+              Welcome back, <span id="welcomeName">...</span>
+            </div>
+            <div class="welcome-sub" id="welcomeSub">
+              Upload your resume and let AI hunt the best matching
+              jobs for you — scored, ranked, and ready to apply.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- stats row -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa fa-magnifying-glass"></i></div>
+          <div class="stat-num" id="statSearches">0</div>
+          <div class="stat-label">Total Searches</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa fa-briefcase"></i></div>
+          <div class="stat-num" id="statJobs">0</div>
+          <div class="stat-label">Jobs Found</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa fa-bookmark"></i></div>
+          <div class="stat-num" id="statSaved">0</div>
+          <div class="stat-label">Jobs Saved</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa fa-paper-plane"></i></div>
+          <div class="stat-num" id="statApplied">0</div>
+          <div class="stat-label">Applied</div>
+        </div>
+      </div>
+
+      <!-- main grid -->
+      <div class="main-grid">
+
+        <!-- LEFT: upload + search -->
+        <div>
+
+          <!-- resume upload card -->
+          <div class="card" style="margin-bottom:20px">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa fa-file-pdf"></i>
+                Resume
+              </div>
+              <span class="card-badge badge-gray" id="resumeStatusBadge">
+                Not Uploaded
+              </span>
+            </div>
+
+            <!-- drop zone -->
+            <div
+              class="drop-zone" id="dropZone"
+              ondragover="onDragOver(event)"
+              ondragleave="onDragLeave(event)"
+              ondrop="onDrop(event)"
+            >
+              <input
+                type="file" id="fileInput"
+                accept=".pdf"
+                onchange="onFileSelected(event)"
+              />
+              <span class="drop-icon">
+                <i class="fa fa-cloud-arrow-up"></i>
+              </span>
+              <div class="drop-title">Drop your resume here</div>
+              <div class="drop-sub">
+                or <span onclick="document.getElementById('fileInput').click()">
+                  browse files
+                </span> — PDF only, max 16MB
+              </div>
+            </div>
+
+            <!-- uploaded state -->
+            <div class="resume-info" id="resumeInfo">
+              <div class="resume-file-icon">
+                <i class="fa fa-file-pdf"></i>
+              </div>
+              <div class="resume-details">
+                <div class="resume-fname" id="resumeFileName">
+                  resume.pdf
+                </div>
+                <div class="resume-meta" id="resumeMeta">
+                  Analyzing...
+                </div>
+              </div>
+              <button class="btn-reupload" onclick="resetResume()" title="Remove">
+                <i class="fa fa-xmark"></i>
+              </button>
+            </div>
+
+            <!-- upload progress -->
+            <div class="upload-progress" id="uploadProgress">
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="progressFill"></div>
+              </div>
+              <div class="progress-label">
+                <i class="fa fa-circle-notch"></i>
+                <span id="progressText">Uploading...</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- search card -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa fa-magnifying-glass"></i>
+                Search Jobs
+              </div>
+            </div>
+
+            <div class="search-wrap">
+              <div class="search-label-row">
+                <span class="search-label">What are you looking for?</span>
+              </div>
+
+              <div class="search-box">
+                <div class="search-input-wrap">
+                  <i class="fa fa-briefcase"></i>
+                  <input
+                    class="search-input"
+                    id="searchInput"
+                    type="text"
+                    placeholder='e.g. "AI Engineer remote" or "Python Developer"'
+                  />
+                </div>
+                <button
+                  class="btn-search" id="searchBtn"
+                  onclick="handleSearch()"
+                >
+                  <span class="btn-search-text">
+                    <i class="fa fa-bolt"></i> Search
+                  </span>
+                  <div class="spin"></div>
+                </button>
+              </div>
+
+              <!-- smart search -->
+              <button
+                class="btn-smart" id="smartBtn"
+                onclick="handleSmartSearch()"
+              >
+                <i class="fa fa-wand-magic-sparkles"></i>
+                Smart Search — find jobs based on my resume
+              </button>
+
+              <!-- recent searches -->
+              <div style="margin-top:18px" id="recentSection">
+                <div class="recent-label">Recent Searches</div>
+                <div class="recent-chips" id="recentChips">
+                  <span class="recent-chip" style="color:var(--text3);border:none;background:none;font-size:12px">
+                    No recent searches yet
+                  </span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- RIGHT: tips + ai status -->
+        <div>
+
+          <!-- quick tips -->
+          <div class="tips-card">
+            <div class="card-title" style="margin-bottom:16px">
+              <i class="fa fa-lightbulb" style="color:var(--amber)"></i>
+              &nbsp;Quick Tips
+            </div>
+            <div class="tip-item">
+              <div class="tip-num">1</div>
+              <div class="tip-text">
+                <strong>Upload your resume</strong> first so AI can
+                match jobs to your exact skills and experience.
+              </div>
+            </div>
+            <div class="tip-item">
+              <div class="tip-num">2</div>
+              <div class="tip-text">
+                Use <strong>Smart Search</strong> to let AI pick
+                the best search queries from your resume.
+              </div>
+            </div>
+            <div class="tip-item">
+              <div class="tip-num">3</div>
+              <div class="tip-text">
+                <strong>Green = great match</strong>,
+                amber = fair match,
+                red = skill gap too large.
+              </div>
+            </div>
+            <div class="tip-item">
+              <div class="tip-num">4</div>
+              <div class="tip-text">
+                Save jobs to your <strong>Tracker</strong> and
+                mark them as Applied to stay organized.
+              </div>
+            </div>
+          </div>
+
+          <!-- ai status -->
+          <div class="ai-status-card">
+            <div class="ai-status-row">
+              <div class="ai-dot"></div>
+              <div class="ai-status-title">AI Services Online</div>
+            </div>
+            <div class="ai-status-sub">
+              All systems operational and ready to hunt jobs for you.
+            </div>
+            <div class="ai-services">
+              <div class="ai-service-row">
+                <span class="ai-service-name">Gemini Flash</span>
+                <span class="ai-service-badge badge-online">Online</span>
+              </div>
+              <div class="ai-service-row">
+                <span class="ai-service-name">Tavily Search</span>
+                <span class="ai-service-badge badge-online">Online</span>
+              </div>
+              <div class="ai-service-row">
+                <span class="ai-service-name">Resume Parser</span>
+                <span class="ai-service-badge badge-online">Online</span>
+              </div>
+              <div class="ai-service-row">
+                <span class="ai-service-name">Job Scorer</span>
+                <span class="ai-service-badge badge-online">Online</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div><!-- /main-grid -->
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+/* ============================================================
+   STATE
+============================================================ */
+let currentUser   = null;
+let currentResume = null;
+let recentSearches = JSON.parse(
+  localStorage.getItem('recentSearches') || '[]'
+);
+
+/* ============================================================
+   INIT
+============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  loadUserProfile();
+  renderRecentSearches();
+  setGreeting();
+
+  /* enter key on search */
+  document.getElementById('searchInput')
+    .addEventListener('keydown', e => {
+      if(e.key === 'Enter') handleSearch();
+    });
+});
+
+/* ============================================================
+   GREETING BASED ON TIME
+============================================================ */
+function setGreeting() {
+  const h   = new Date().getHours();
+  const msg = h < 12 ? 'Good morning' :
+              h < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('topbarTitle').innerHTML =
+    `${msg}, <span id="topbarName">...</span> 👋`;
+}
+
+/* ============================================================
+   LOAD USER PROFILE
+============================================================ */
+async function loadUserProfile() {
+  try {
+    const res  = await fetch('/api/auth/me', {credentials:'include'});
+    const data = await res.json();
+
+    if(!data.success){
+      window.location.href = '/';
+      return;
+    }
+
+    currentUser   = data.user;
+    currentResume = data.resume;
+
+    /* update UI */
+    const first = currentUser.name.split(' ')[0];
+    const init  = currentUser.name.charAt(0).toUpperCase();
+
+    document.getElementById('sidebarAvatar').textContent  = init;
+    document.getElementById('sidebarName').textContent    = currentUser.name;
+    document.getElementById('sidebarRole').textContent    =
+      currentResume
+        ? `${currentResume.seniority || 'Mid'} Level`
+        : 'Job Seeker';
+    document.getElementById('welcomeName').textContent    = first;
+    document.getElementById('topbarName').textContent     = first;
+    document.getElementById('welcomeGreeting').textContent =
+      `Welcome back — let's find your next opportunity 🚀`;
+
+    /* stats */
+    const s = data.stats || {};
+    animateNumber('statSearches', s.total_searches || 0);
+    animateNumber('statJobs',     s.total_jobs     || 0);
+    animateNumber('statSaved',    s.total_saved    || 0);
+    animateNumber('statApplied',  s.total_applied  || 0);
+
+    /* resume */
+    if(data.has_resume && currentResume){
+      showResumeLoaded(currentResume);
+    }
+
+  } catch(err) {
+    console.error('Profile load error:', err);
+    window.location.href = '/';
+  }
+}
+
+/* ============================================================
+   NUMBER ANIMATION
+============================================================ */
+function animateNumber(id, target) {
+  const el    = document.getElementById(id);
+  const dur   = 900;
+  const start = performance.now();
+  const tick  = now => {
+    const t = Math.min((now - start) / dur, 1);
+    el.textContent = Math.round(t * target);
+    if(t < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+/* ============================================================
+   SIDEBAR TOGGLE
+============================================================ */
+function toggleSidebar() {
+  const sb   = document.getElementById('sidebar');
+  const icon = document.getElementById('toggleIcon');
+  sb.classList.toggle('collapsed');
+  icon.style.transform =
+    sb.classList.contains('collapsed')
+      ? 'rotate(180deg)' : 'rotate(0deg)';
+  localStorage.setItem(
+    'sidebarCollapsed',
+    sb.classList.contains('collapsed')
+  );
+}
+
+/* restore sidebar state */
+if(localStorage.getItem('sidebarCollapsed') === 'true'){
+  document.getElementById('sidebar').classList.add('collapsed');
+  document.getElementById('toggleIcon').style.transform =
+    'rotate(180deg)';
+}
+
+/* ============================================================
+   NAV
+============================================================ */
+function setPage(page) {
+  document.querySelectorAll('.nav-item').forEach(n =>
+    n.classList.remove('active')
+  );
+  const el = document.getElementById(`nav-${page}`);
+  if(el) el.classList.add('active');
+}
+
+function navigateTo(path) {
+  window.location.href = path;
+}
+
+/* ============================================================
+   RESUME UPLOAD — DRAG & DROP
+============================================================ */
+function onDragOver(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.add('dragover');
+}
+function onDragLeave(e) {
+  document.getElementById('dropZone').classList.remove('dragover');
+}
+function onDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if(file) uploadResume(file);
+}
+function onFileSelected(e) {
+  const file = e.target.files[0];
+  if(file) uploadResume(file);
+}
+
+async function uploadResume(file) {
+  if(!file.name.toLowerCase().endsWith('.pdf')){
+    showToast('Please upload a PDF file only.','error');
+    return;
+  }
+  if(file.size > 16 * 1024 * 1024){
+    showToast('File too large. Max size is 16MB.','error');
+    return;
+  }
+
+  /* show progress */
+  document.getElementById('dropZone').style.display    = 'none';
+  document.getElementById('resumeInfo').classList.remove('show');
+  const prog = document.getElementById('uploadProgress');
+  prog.classList.add('show');
+  document.getElementById('resumeFileName').textContent = file.name;
+
+  /* animate progress bar */
+  let pct = 0;
+  const fill = document.getElementById('progressFill');
+  const ptxt = document.getElementById('progressText');
+  const iv = setInterval(() => {
+    pct = Math.min(pct + Math.random() * 12, 88);
+    fill.style.width = pct + '%';
+  }, 300);
+
+  const steps = [
+    [800,  'Extracting text...'],
+    [1800, 'Cleaning with SpaCy...'],
+    [3000, 'Analyzing with Gemini...'],
+  ];
+  steps.forEach(([delay, msg]) =>
+    setTimeout(() => { ptxt.textContent = msg; }, delay)
+  );
+
+  try {
+    const fd = new FormData();
+    fd.append('resume', file);
+
+    const res  = await fetch('/api/resume/upload', {
+      method:'POST', credentials:'include', body:fd
+    });
+    const data = await res.json();
+
+    clearInterval(iv);
+    fill.style.width = '100%';
+
+    if(data.success){
+      currentResume = data.resume;
+      setTimeout(() => {
+        prog.classList.remove('show');
+        showResumeLoaded(data.resume);
+        showToast(
+          `Resume uploaded! Found ${data.resume.skills?.length || 0} skills.`,
+          'success'
+        );
+        /* refresh stats */
+        loadUserProfile();
+      }, 500);
+    } else {
+      clearInterval(iv);
+      prog.classList.remove('show');
+      document.getElementById('dropZone').style.display = '';
+      showToast(data.error || 'Upload failed.', 'error');
+    }
+  } catch(err) {
+    clearInterval(iv);
+    prog.classList.remove('show');
+    document.getElementById('dropZone').style.display = '';
+    showToast('Upload failed. Check your connection.', 'error');
+  }
+}
+
+function showResumeLoaded(resume) {
+  document.getElementById('dropZone').style.display = 'none';
+  document.getElementById('uploadProgress').classList.remove('show');
+
+  const info = document.getElementById('resumeInfo');
+  info.classList.add('show');
+
+  document.getElementById('resumeFileName').textContent =
+    resume.filename || 'resume.pdf';
+  document.getElementById('resumeMeta').textContent =
+    `${resume.skills?.length || 0} skills · ${resume.seniority || 'mid'} level · ${resume.years_experience || 0} yrs exp`;
+
+  /* sidebar pill */
+  const pill = document.getElementById('resumePill');
+  pill.className = 'resume-pill uploaded';
+  document.getElementById('resumePillText').textContent = 'Resume Ready';
+
+  /* badge */
+  document.getElementById('resumeStatusBadge').className =
+    'card-badge badge-green';
+  document.getElementById('resumeStatusBadge').textContent = 'Uploaded ✓';
+
+  /* sidebar role */
+  document.getElementById('sidebarRole').textContent =
+    `${resume.seniority || 'Mid'} Level`;
+
+  /* skills in sidebar */
+  const skills = resume.skills || [];
+  if(skills.length){
+    const wrap = document.getElementById('skillsWrap');
+    wrap.innerHTML = skills.slice(0,8).map(s =>
+      `<span class="skill-tag">${s}</span>`
+    ).join('');
+    document.getElementById('sidebarSkills').style.display = 'block';
+  }
+}
+
+function resetResume() {
+  currentResume = null;
+  document.getElementById('resumeInfo').classList.remove('show');
+  document.getElementById('dropZone').style.display = '';
+  document.getElementById('fileInput').value = '';
+  document.getElementById('resumeStatusBadge').className =
+    'card-badge badge-gray';
+  document.getElementById('resumeStatusBadge').textContent =
+    'Not Uploaded';
+  document.getElementById('resumePill').className =
+    'resume-pill missing';
+  document.getElementById('resumePillText').textContent =
+    'No Resume';
+  document.getElementById('sidebarSkills').style.display = 'none';
+}
+
+/* ============================================================
+   SEARCH
+============================================================ */
+async function handleSearch() {
+  const query = document.getElementById('searchInput').value.trim();
+  if(!query){
+    showToast('Please enter a search query.', 'error');
+    return;
+  }
+  runSearch(query);
+}
+
+async function handleSmartSearch() {
+  if(!currentResume){
+    showToast('Please upload your resume first for Smart Search.','error');
+    return;
+  }
+  runSearch('Find jobs based on my resume');
+}
+
+async function runSearch(query) {
+  /* show overlay */
+  const overlay = document.getElementById('searchOverlay');
+  overlay.classList.add('show');
+
+  /* animate steps */
+  const stepIds = ['step1','step2','step3','step4'];
+  const delays  = [0, 4000, 9000, 14000];
+  stepIds.forEach((id,i) => {
+    setTimeout(() => {
+      stepIds.forEach(s => {
+        const el = document.getElementById(s);
+        if(el) el.classList.remove('active');
+      });
+      /* mark previous as done */
+      if(i > 0){
+        const prev = document.getElementById(stepIds[i-1]);
+        if(prev){
+          prev.classList.add('done');
+          prev.querySelector('i').className = 'fa fa-circle-check';
+        }
+      }
+      const cur = document.getElementById(id);
+      if(cur) cur.classList.add('active');
+    }, delays[i]);
+  });
+
+  /* save to recent */
+  if(!recentSearches.includes(query)){
+    recentSearches.unshift(query);
+    recentSearches = recentSearches.slice(0,6);
+    localStorage.setItem('recentSearches',
+      JSON.stringify(recentSearches)
+    );
+  }
+
+  try {
+    const res  = await fetch('/api/search', {
+      method:      'POST',
+      headers:     {'Content-Type':'application/json'},
+      credentials: 'include',
+      body:        JSON.stringify({query})
+    });
+    const data = await res.json();
+
+    overlay.classList.remove('show');
+    resetSteps();
+
+    if(data.success){
+      /* store results + redirect */
+      sessionStorage.setItem('searchResults',
+        JSON.stringify(data.jobs)
+      );
+      sessionStorage.setItem('searchId', data.search_id);
+      showToast(
+        `Found ${data.total} matching jobs!`, 'success'
+      );
+      setTimeout(() => {
+        window.location.href = '/jobs';
+      }, 800);
+    } else {
+      showToast(data.error || 'Search failed.', 'error');
+    }
+  } catch(err) {
+    overlay.classList.remove('show');
+    resetSteps();
+    showToast('Search failed. Check connection.', 'error');
+  }
+}
+
+function resetSteps() {
+  ['step1','step2','step3','step4'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el){
+      el.classList.remove('active','done');
+      const icon = el.querySelector('i');
+      if(icon) icon.className = icon.className
+        .replace('fa-circle-check','fa-magnifying-glass');
+    }
+  });
+  document.getElementById('step1').classList.add('active');
+}
+
+/* ============================================================
+   RECENT SEARCHES
+============================================================ */
+function renderRecentSearches() {
+  const wrap = document.getElementById('recentChips');
+  if(!recentSearches.length) return;
+  wrap.innerHTML = recentSearches.map(q =>
+    `<span class="recent-chip" onclick="setSearchAndRun('${q.replace(/'/g,"\\'")}')">
+      <i class="fa fa-clock-rotate-left"></i>
+      ${q}
+    </span>`
+  ).join('');
+}
+
+function setSearchAndRun(q) {
+  document.getElementById('searchInput').value = q;
+  runSearch(q);
+}
+
+/* ============================================================
+   LOGOUT
+============================================================ */
+async function handleLogout() {
+  try {
+    await fetch('/api/auth/logout',{
+      method:'POST', credentials:'include'
+    });
+  } catch(_){}
+  window.location.href = '/';
+}
+
+/* ============================================================
+   TOAST
+============================================================ */
+function showToast(msg, type='info') {
+  const icons = {
+    success:'fa-circle-check',
+    error:  'fa-circle-exclamation',
+    info:   'fa-circle-info'
+  };
+  const id   = 'toast_' + Date.now();
+  const html = `
+    <div class="toast ${type}" id="${id}">
+      <i class="fa ${icons[type]||icons.info} toast-icon"></i>
+      <span class="toast-msg">${msg}</span>
+      <button class="toast-close" onclick="removeToast('${id}')">
+        <i class="fa fa-xmark"></i>
+      </button>
+    </div>`;
+  document.getElementById('toastContainer')
+    .insertAdjacentHTML('beforeend', html);
+  setTimeout(() => removeToast(id), 4500);
+}
+
+function removeToast(id) {
+  const el = document.getElementById(id);
+  if(el) el.remove();
+}
+</script>
+</body>
+</html>
