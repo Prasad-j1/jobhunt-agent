@@ -11,22 +11,22 @@ An autonomous AI agent that searches jobs, analyzes fit, scores opportunities, a
 # 📸 DEMO Images Preview
 
 ## 🔐 Dashboar page / Landing page
-![Authentication Page](images\Landing_Page.png)
+![Authentication Page](images/Landing_Page.png)
 
 ---
 
 ## 📊 Matching Job cards 
-![Job cards](images\Matching_Jobs.png)
+![Job cards](images/Matching_Jobs.png)
 
 ---
 
 
 ## 📝 Cover Letter Generator
-![Cover Letter Generator](images\Cover_letter_1.png)
+![Cover Letter Generator](images/Cover_letter_1.png)
 ---
 
 ## 🎯 Job tracker
-![Job Matching Results](images\Job_tracker.png)
+![Job Matching Results](images/Job_tracker.png)
 
 
 
